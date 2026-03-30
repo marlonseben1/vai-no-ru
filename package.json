@@ -1,0 +1,19 @@
+{
+  "name": "upf-ru-autofiller-root",
+  "devDependencies": {
+    "prettier": "^3.8.1"
+  },
+  "private": true,
+  "scripts": {
+    "dev:web": "bun --filter web dev",
+    "dev:server": "bun --filter server dev",
+    "dev": "bun --filter \"*\" dev",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "tsc --build"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}
