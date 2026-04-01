@@ -4,7 +4,8 @@ import {
   type SubmitErrorHandler,
   type SubmitHandler,
 } from 'react-hook-form';
-import { type RuUpfData } from '@repo/shared';
+import { type RuUpfData, ruFormSchema } from '@repo/shared';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Button,
   Stack,
@@ -20,16 +21,16 @@ import { TextFieldInput } from '../TextFieldInput/TextFieldInput';
 import { SelectFieldInput } from '../SelectFieldInput/SelectFieldInput';
 import { DatePickerInput } from '../DatePickerInput/DatePickerInput';
 import { perfilOptions, refeicaoOptions } from '@/constants/formOptions';
-import dayjs from 'dayjs';
 
 import { useToast } from '../../hooks/useToast';
 
 export const RUForm = () => {
   const { showToast } = useToast();
   const { control, handleSubmit, reset } = useForm<RuUpfData>({
+    resolver: zodResolver(ruFormSchema),
     defaultValues: {
       email: '',
-      data: [`${dayjs()}`],
+      data: [],
       matricula: '',
       nome: '',
       perfil: 'Aluno graduação UPF',
@@ -71,7 +72,7 @@ export const RUForm = () => {
 
       <Divider sx={{ mb: 4 }} />
 
-      <form onSubmit={handleSubmit(onSubmit, onError)}>
+      <form onSubmit={handleSubmit(onSubmit, onError)} noValidate>
         <Grid container spacing={4}>
           <Grid size={12}>
             <Typography
