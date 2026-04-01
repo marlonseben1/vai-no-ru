@@ -35,6 +35,7 @@ export function TextFieldInput<T extends FieldValues>({
     <TextField
       fullWidth
       {...field}
+      inputRef={field.ref}
       {...textFieldProps}
       required={required}
       placeholder={placeholder}
