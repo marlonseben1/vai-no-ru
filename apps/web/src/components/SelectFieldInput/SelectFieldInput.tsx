@@ -4,6 +4,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  type SelectChangeEvent,
   type SelectProps,
 } from '@mui/material';
 import {
@@ -18,12 +19,64 @@ export interface SelectOption {
   value: string | number;
 }
 
-interface SelectFieldInputProps<T extends FieldValues> {
-  name: Path<T>;
-  control: Control<T>;
+interface BaseSelectProps {
   label: string;
   options: readonly string[] | SelectOption[];
   selectProps?: SelectProps;
+  value?: string | number;
+  onChange?: (e: SelectChangeEvent<unknown>) => void;
+  error?: string;
+  name?: string;
+}
+
+function BaseSelect({
+  label,
+  options,
+  selectProps,
+  value,
+  onChange,
+  error,
+  name,
+}: BaseSelectProps) {
+  const labelId = name ? `${name}-label` : 'select-label';
+
+  return (
+    <FormControl fullWidth error={!!error}>
+      <InputLabel id={labelId} shrink>
+        {label}
+      </InputLabel>
+      <Select
+        {...selectProps}
+        labelId={labelId}
+        label={label}
+        value={value ?? ''}
+        onChange={onChange}
+      >
+        {options.map((option) => {
+          const isString = typeof option === 'string';
+          const optValue = isString ? option : option.value;
+          const displayLabel = isString ? option : option.label;
+
+          return (
+            <MenuItem key={optValue} value={optValue}>
+              {displayLabel}
+            </MenuItem>
+          );
+        })}
+      </Select>
+      {error && <FormHelperText>{error}</FormHelperText>}
+    </FormControl>
+  );
+}
+
+interface SelectFieldInputProps<T extends FieldValues> {
+  name?: Path<T>;
+  control?: Control<T>;
+  label: string;
+  options: readonly string[] | SelectOption[];
+  selectProps?: SelectProps;
+  value?: string | number;
+  onChange?: (e: SelectChangeEvent<unknown>) => void;
 }
 
 export function SelectFieldInput<T extends FieldValues>({
@@ -32,7 +85,47 @@ export function SelectFieldInput<T extends FieldValues>({
   control,
   options,
   selectProps,
+  value,
+  onChange,
 }: SelectFieldInputProps<T>) {
+  if (!name || !control) {
+    return (
+      <BaseSelect
+        label={label}
+        options={options}
+        selectProps={selectProps}
+        value={value}
+        onChange={onChange}
+      />
+    );
+  }
+
+  return (
+    <ControlledSelect
+      name={name}
+      control={control}
+      label={label}
+      options={options}
+      selectProps={selectProps}
+    />
+  );
+}
+
+interface ControlledSelectProps<T extends FieldValues> {
+  name: Path<T>;
+  control: Control<T>;
+  label: string;
+  options: readonly string[] | SelectOption[];
+  selectProps?: SelectProps;
+}
+
+function ControlledSelect<T extends FieldValues>({
+  name,
+  control,
+  label,
+  options,
+  selectProps,
+}: ControlledSelectProps<T>) {
   const {
     field,
     fieldState: { error },
@@ -41,33 +134,14 @@ export function SelectFieldInput<T extends FieldValues>({
     control,
   });
 
-  const labelId = `${name}-label`;
-
   return (
-    <FormControl fullWidth error={!!error}>
-      <InputLabel id={labelId} shrink>
-        {label}
-      </InputLabel>
-      <Select
-        {...field}
-        {...selectProps}
-        labelId={labelId}
-        label={label}
-        value={field.value ?? ''}
-      >
-        {options.map((option) => {
-          const isString = typeof option === 'string';
-          const value = isString ? option : option.value;
-          const displayLabel = isString ? option : option.label;
-
-          return (
-            <MenuItem key={value} value={value}>
-              {displayLabel}
-            </MenuItem>
-          );
-        })}
-      </Select>
-      {error && <FormHelperText>{error.message}</FormHelperText>}
-    </FormControl>
+    <BaseSelect
+      name={name}
+      label={label}
+      options={options}
+      selectProps={{ ...selectProps, ...field }}
+      value={field.value}
+      error={error?.message}
+    />
   );
 }
