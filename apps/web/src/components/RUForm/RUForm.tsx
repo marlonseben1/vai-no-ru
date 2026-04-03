@@ -20,7 +20,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { TextFieldInput } from '../TextFieldInput/TextFieldInput';
 import { SelectFieldInput } from '../SelectFieldInput/SelectFieldInput';
 import { DatePickerInput } from '../DatePickerInput/DatePickerInput';
-import { perfilOptions, refeicaoOptions } from '@/constants/formOptions';
+import { perfilOptions } from '@/shared/constants/constants';
 
 import { useToast } from '../../hooks/useToast';
 
@@ -34,7 +34,6 @@ export const RUForm = () => {
       matricula: '',
       nome: '',
       perfil: 'Aluno graduação UPF',
-      refeicao: 'Jantar',
     },
   });
 
@@ -119,19 +118,11 @@ export const RUForm = () => {
               Sua Reserva
             </Typography>
             <Grid container spacing={2}>
-              <Grid size={{ xs: 12, md: 6 }}>
+              <Grid size={{ xs: 12 }}>
                 <DatePickerInput
                   name="data"
                   control={control}
-                  label="Data da reserva"
-                />
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <SelectFieldInput
-                  control={control}
-                  label="Tipo de Refeição"
-                  name="refeicao"
-                  options={refeicaoOptions}
+                  label="Datas e Refeições da Reserva"
                 />
               </Grid>
             </Grid>
