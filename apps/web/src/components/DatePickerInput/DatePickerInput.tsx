@@ -2,14 +2,17 @@ import { useState } from 'react';
 import { TextField, InputAdornment, IconButton } from '@mui/material';
 import { CalendarMonth as CalendarIcon } from '@mui/icons-material';
 import { type DateCalendarProps } from '@mui/x-date-pickers/DateCalendar';
-import dayjs, { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 import {
   useController,
   type Control,
   type FieldPath,
   type FieldValues,
 } from 'react-hook-form';
-import { DatePickerDialog } from '../DatePickerDialog/DatePickerDialog';
+import {
+  DatePickerDialog,
+  type DateMeal,
+} from '../DatePickerDialog/DatePickerDialog';
 
 type DatePickerInputProps<T extends FieldValues> = {
   name: FieldPath<T>;
@@ -36,11 +39,10 @@ export function DatePickerInput<T extends FieldValues>({
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  // Exibir as datas formatadas e separadas por vírgula
   const displayValue =
     Array.isArray(value) && value.length > 0
       ? value
-          .map((d: string | Dayjs) => dayjs(d).format('DD/MM/YYYY'))
+          .map((d: DateMeal) => dayjs(d.data).format('DD/MM/YYYY'))
           .sort(
             (a: string, b: string) =>
               dayjs(a, 'DD/MM/YYYY').unix() - dayjs(b, 'DD/MM/YYYY').unix(),
@@ -48,9 +50,10 @@ export function DatePickerInput<T extends FieldValues>({
           .join(', ')
       : '';
 
-  const handleDateChange = (newDates: Dayjs[]) => {
-    // Converte Dayjs[] para string[] conforme o schema espera
-    onChange(newDates.map((d) => d.toISOString()));
+  const handleDateChange = (
+    newValues: { data: string; refeicao: string }[],
+  ) => {
+    onChange(newValues);
   };
 
   return (

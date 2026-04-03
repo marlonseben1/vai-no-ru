@@ -13,6 +13,11 @@ export const perfilEnum = z.enum([
   'Estudante rede municipal/estadual',
 ]);
 
+export const reservaDiaSchema = z.object({
+  data: z.string(),
+  refeicao: refeicaoEnum,
+});
+
 export const ruFormSchema = z.object({
   email: z.email('E-mail inválido').min(1, 'O e-mail é obrigatório'),
   nome: z.string().min(3, 'O nome deve conter pelo menos 3 caracteres'),
@@ -20,9 +25,8 @@ export const ruFormSchema = z.object({
     .string()
     .min(1, 'Informe o número da matrícula')
     .regex(/^\d+$/, 'A matrícula deve conter apenas números'),
-  refeicao: refeicaoEnum,
   perfil: perfilEnum,
-  data: z.array(z.string()).min(1, 'Você deve informar pelo menos uma data'),
+  data: z.array(reservaDiaSchema).min(1, 'Você deve informar pelo menos uma data'),
 });
 
 export type RuUpfData = z.infer<typeof ruFormSchema>;
