@@ -12,6 +12,7 @@
         }
     },
     "include": [
-        "src/**/*"
+        "src/**/*",
+        "../../packages/shared/index.ts"
     ]
 }
