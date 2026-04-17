@@ -8,5 +8,15 @@
   },
   "peerDependencies": {
     "typescript": "^5"
+  },
+  "dependencies": {
+    "@elysiajs/cors": "^1.4.1",
+    "@elysiajs/cron": "^1.4.1",
+    "dayjs": "^1.11.20",
+    "elysia": "^1.4.28",
+    "@repo/shared": "workspace:*"
+  },
+  "scripts": {
+    "dev": "bun run --watch src/index.ts"
   }
 }
