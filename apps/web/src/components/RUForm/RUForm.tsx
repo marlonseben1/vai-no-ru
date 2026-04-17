@@ -1,28 +1,27 @@
+import { zodResolver } from '@hookform/resolvers/zod';
+import DeleteIcon from '@mui/icons-material/Delete';
 import {
-  useForm,
-  useWatch,
+  Box,
+  Button,
+  Divider,
+  Grid,
+  Paper,
+  Stack,
+  Typography,
+} from '@mui/material';
+import { type RuUpfData, ruFormSchema } from '@repo/shared';
+import axios from 'axios';
+import {
   type SubmitErrorHandler,
   type SubmitHandler,
+  useForm,
+  useWatch,
 } from 'react-hook-form';
-import { type RuUpfData, ruFormSchema } from '@repo/shared';
-import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  Button,
-  Stack,
-  Paper,
-  Typography,
-  Divider,
-  Box,
-  Grid,
-} from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-
-import { TextFieldInput } from '../TextFieldInput/TextFieldInput';
-import { SelectFieldInput } from '../SelectFieldInput/SelectFieldInput';
-import { DatePickerInput } from '../DatePickerInput/DatePickerInput';
 import { perfilOptions } from '@/shared/constants/constants';
-
 import { useToast } from '../../hooks/useToast';
+import { DatePickerInput } from '../DatePickerInput/DatePickerInput';
+import { SelectFieldInput } from '../SelectFieldInput/SelectFieldInput';
+import { TextFieldInput } from '../TextFieldInput/TextFieldInput';
 
 export const RUForm = () => {
   const { showToast } = useToast();
@@ -40,13 +39,19 @@ export const RUForm = () => {
   const perfil = useWatch({ control, name: 'perfil' });
   const isAlunoUpf = perfil === 'Aluno graduação UPF';
 
-  const onSubmit: SubmitHandler<RuUpfData> = (data) => {
-    console.log(data);
-    showToast('Reserva registrada com sucesso!', 'success');
+  const onSubmit: SubmitHandler<RuUpfData> = async (data) => {
+    try {
+      await axios.post('http://localhost:3003/reserva', data);
+
+      showToast('Reserva registrada com sucesso!', 'success');
+      reset();
+    } catch (_) {
+      showToast('Erro ao se conectar com o servidor.', 'error');
+    }
   };
 
   const onError: SubmitErrorHandler<RuUpfData> = (errors) => {
-    console.log(errors);
+    console.log(errors); // TODO: Remover ao subir a versão definitiva do projeto
     showToast('Por favor, corrija os erros no formulário.', 'error');
   };
 
