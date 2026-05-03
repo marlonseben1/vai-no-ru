@@ -1,5 +1,4 @@
 import DeleteIcon from '@mui/icons-material/Delete';
-import LogoutIcon from '@mui/icons-material/Logout';
 import {
   Box,
   Button,
@@ -16,15 +15,8 @@ import { TextFieldInput } from '../../components/textFieldInput/textFieldInput';
 import { useFormulario } from './useFormulario';
 
 export const Formulario = () => {
-  const {
-    reset,
-    logout,
-    control,
-    onError,
-    onSubmit,
-    isAlunoUpf,
-    handleSubmit,
-  } = useFormulario();
+  const { reset, control, onError, onSubmit, isAlunoUpf, handleSubmit } =
+    useFormulario();
 
   return (
     <Paper
@@ -50,14 +42,6 @@ export const Formulario = () => {
             Nunca mais perca o desconto na sua refeição no RU!
           </Typography>
         </Box>
-        <Button
-          variant="outlined"
-          color="error"
-          startIcon={<LogoutIcon />}
-          onClick={logout}
-        >
-          Sair
-        </Button>
       </Box>
 
       <Divider sx={{ mb: 4 }} />
