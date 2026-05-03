@@ -1,5 +1,5 @@
-import type { SelectOption } from '@/components/SelectFieldInput/SelectFieldInput';
 import { perfilEnum, refeicaoEnum } from '@repo/shared';
+import type { SelectOption } from '@/components/selectFieldInput/selectFieldInput';
 
 export const refeicaoOptions: SelectOption[] = refeicaoEnum.options.map(
   (label) => ({

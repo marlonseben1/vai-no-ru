@@ -1,7 +1,8 @@
-import React, { useState, useCallback } from 'react';
-import { Snackbar, Alert } from '@mui/material';
 import type { AlertColor } from '@mui/material';
-import { ToastContext } from '../context/ToastContext';
+import { Alert, Snackbar } from '@mui/material';
+import type React from 'react';
+import { useCallback, useState } from 'react';
+import { ToastContext } from '../context/toastContext';
 
 export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
   children,

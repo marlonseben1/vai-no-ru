@@ -1,5 +1,5 @@
-import { zodResolver } from '@hookform/resolvers/zod';
 import DeleteIcon from '@mui/icons-material/Delete';
+import LogoutIcon from '@mui/icons-material/Logout';
 import {
   Box,
   Button,
@@ -9,69 +9,55 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { type RuUpfData, ruFormSchema } from '@repo/shared';
-import axios from 'axios';
-import {
-  type SubmitErrorHandler,
-  type SubmitHandler,
-  useForm,
-  useWatch,
-} from 'react-hook-form';
 import { perfilOptions } from '@/shared/constants/constants';
-import { useToast } from '../../hooks/useToast';
-import { DatePickerInput } from '../DatePickerInput/DatePickerInput';
-import { SelectFieldInput } from '../SelectFieldInput/SelectFieldInput';
-import { TextFieldInput } from '../TextFieldInput/TextFieldInput';
+import { DatePickerInput } from '../../components/datePickerInput/datePickerInput';
+import { SelectFieldInput } from '../../components/selectFieldInput/selectFieldInput';
+import { TextFieldInput } from '../../components/textFieldInput/textFieldInput';
+import { useMainForm } from './useMainForm';
 
-export const RUForm = () => {
-  const { showToast } = useToast();
-  const { control, handleSubmit, reset } = useForm<RuUpfData>({
-    resolver: zodResolver(ruFormSchema),
-    defaultValues: {
-      email: '',
-      data: [],
-      matricula: '',
-      nome: '',
-      perfil: 'Aluno graduação UPF',
-    },
-  });
-
-  const perfil = useWatch({ control, name: 'perfil' });
-  const isAlunoUpf = perfil === 'Aluno graduação UPF';
-
-  const onSubmit: SubmitHandler<RuUpfData> = async (data) => {
-    try {
-      await axios.post('http://localhost:3003/reserva', data);
-
-      showToast('Reserva registrada com sucesso!', 'success');
-      reset();
-    } catch (_) {
-      showToast('Erro ao se conectar com o servidor.', 'error');
-    }
-  };
-
-  const onError: SubmitErrorHandler<RuUpfData> = (errors) => {
-    console.log(errors); // TODO: Remover ao subir a versão definitiva do projeto
-    showToast('Por favor, corrija os erros no formulário.', 'error');
-  };
+export const MainForm = () => {
+  const {
+    reset,
+    logout,
+    control,
+    onError,
+    onSubmit,
+    isAlunoUpf,
+    handleSubmit,
+  } = useMainForm();
 
   return (
     <Paper
       elevation={3}
       sx={{ borderRadius: 2, maxWidth: 800, mx: 'auto', p: 4, mt: 2 }}
     >
-      <Box mb={3}>
-        <Typography
-          variant="h5"
-          component="h1"
-          fontWeight="bold"
-          color="primary"
+      <Box
+        mb={3}
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+      >
+        <Box>
+          <Typography
+            variant="h5"
+            component="h1"
+            fontWeight="bold"
+            color="primary"
+          >
+            Reserva RU - UPF
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Nunca mais perca o desconto na sua refeição no RU!
+          </Typography>
+        </Box>
+        <Button
+          variant="outlined"
+          color="error"
+          startIcon={<LogoutIcon />}
+          onClick={logout}
         >
-          Reserva RU - UPF
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Nunca mais perca o desconto na sua refeição no RU!
-        </Typography>
+          Sair
+        </Button>
       </Box>
 
       <Divider sx={{ mb: 4 }} />
@@ -127,7 +113,7 @@ export const RUForm = () => {
                 <DatePickerInput
                   name="data"
                   control={control}
-                  label="Datas e Refeições da Reserva"
+                  label="Datas e Refeições"
                 />
               </Grid>
             </Grid>
@@ -161,7 +147,7 @@ export const RUForm = () => {
                     name="matricula"
                     control={control}
                     required
-                    label="Nº da Matrícula"
+                    label="Matrícula"
                     placeholder="Ex: 123456"
                   />
                 </Grid>
@@ -182,7 +168,7 @@ export const RUForm = () => {
                 startIcon={<DeleteIcon />}
                 onClick={() => reset()}
               >
-                Limpar Campos
+                Limpar
               </Button>
               <Button
                 variant="contained"
@@ -190,7 +176,7 @@ export const RUForm = () => {
                 size="large"
                 sx={{ px: 4, fontWeight: 'bold' }}
               >
-                Registrar Reserva
+                Registrar
               </Button>
             </Stack>
           </Grid>

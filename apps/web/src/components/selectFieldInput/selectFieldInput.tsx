@@ -8,10 +8,10 @@ import {
   type SelectProps,
 } from '@mui/material';
 import {
-  useController,
   type Control,
   type FieldValues,
   type Path,
+  useController,
 } from 'react-hook-form';
 
 export interface SelectOption {
