@@ -12,8 +12,10 @@
   "dependencies": {
     "@elysiajs/cors": "^1.4.1",
     "@elysiajs/cron": "^1.4.1",
+    "@elysiajs/jwt": "^1.2.0",
     "dayjs": "^1.11.20",
     "elysia": "^1.4.28",
+    "google-auth-library": "^9.15.0",
     "@repo/shared": "workspace:*"
   },
   "scripts": {

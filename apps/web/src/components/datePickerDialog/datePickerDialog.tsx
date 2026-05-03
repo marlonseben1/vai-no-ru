@@ -1,30 +1,30 @@
+import DeleteIcon from '@mui/icons-material/Delete';
 import {
+  Box,
+  Button,
   Dialog,
+  DialogActions,
   DialogContent,
   DialogTitle,
-  DialogActions,
-  Button,
+  Divider,
+  IconButton,
   Stack,
   Typography,
-  IconButton,
-  Divider,
-  Box,
 } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import {
   DateCalendar,
   type DateCalendarProps,
 } from '@mui/x-date-pickers/DateCalendar';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import {
   PickersDay,
   type PickersDayProps,
 } from '@mui/x-date-pickers/PickersDay';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { colorPalette } from '@/styles/colorPalette';
-import { SelectFieldInput } from '../SelectFieldInput/SelectFieldInput';
-import { refeicaoOptions } from '@/shared/constants/constants';
 import useIsMobile from '@/hooks/useIsMobile';
+import { refeicaoOptions } from '@/shared/constants/constants';
+import { colorPalette } from '@/styles/colorPalette';
+import { SelectFieldInput } from '../selectFieldInput/selectFieldInput';
 import { useDatePickerDialog } from './useDatePickerDialog';
 
 export interface DateMeal {

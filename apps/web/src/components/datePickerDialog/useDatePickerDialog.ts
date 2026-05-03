@@ -1,5 +1,5 @@
-import dayjs, { Dayjs } from 'dayjs';
-import type { DateMeal } from './DatePickerDialog';
+import dayjs, { type Dayjs } from 'dayjs';
+import type { DateMeal } from './datePickerDialog';
 
 interface UseDatePickerDialogProps {
   value: DateMeal[];
