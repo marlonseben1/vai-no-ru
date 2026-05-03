@@ -18,6 +18,4 @@ const app = new Elysia()
   .use(authRoutes)
   .listen(3003);
 
-console.log(
-  `🦊 Elysia (upf-ru-autofiller) rodando na porta ${app.server?.port}`,
-);
+console.log(`🦊 Elysia (vai-no-ru) rodando na porta ${app.server?.port}`);

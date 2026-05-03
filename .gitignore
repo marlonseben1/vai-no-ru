@@ -17,3 +17,8 @@ bun.lockb
 .vscode/
 .idea/
 *.swp
+
+instance.db
+*.db
+*.sqlite
+*.sqlite3
