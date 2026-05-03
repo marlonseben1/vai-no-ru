@@ -1,13 +1,5 @@
 import DeleteIcon from '@mui/icons-material/Delete';
-import {
-  Box,
-  Button,
-  Divider,
-  Grid,
-  Paper,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Button, Divider, Grid, Paper, Stack, Typography } from '@mui/material';
 import { perfilOptions } from '@/shared/constants/constants';
 import { DatePickerInput } from '../../components/datePickerInput/datePickerInput';
 import { SelectFieldInput } from '../../components/selectFieldInput/selectFieldInput';
@@ -23,29 +15,6 @@ export const Formulario = () => {
       elevation={3}
       sx={{ borderRadius: 2, maxWidth: 800, mx: 'auto', p: 4, mt: 2 }}
     >
-      <Box
-        mb={3}
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-      >
-        <Box>
-          <Typography
-            variant="h5"
-            component="h1"
-            fontWeight="bold"
-            color="primary"
-          >
-            Reserva RU - UPF
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Nunca mais perca o desconto na sua refeição no RU!
-          </Typography>
-        </Box>
-      </Box>
-
-      <Divider sx={{ mb: 4 }} />
-
       <form onSubmit={handleSubmit(onSubmit, onError)} noValidate>
         <Grid container spacing={4}>
           <Grid size={12}>
@@ -55,7 +24,7 @@ export const Formulario = () => {
               gutterBottom
               mb={2}
             >
-              Dados Pessoais
+              Perfil e Identificação
             </Typography>
             <Grid container spacing={2}>
               <Grid size={{ xs: 12, md: 6 }}>
@@ -80,42 +49,6 @@ export const Formulario = () => {
           </Grid>
 
           <Grid size={12}>
-            <Divider />
-          </Grid>
-
-          <Grid size={12}>
-            <Typography
-              variant="subtitle1"
-              fontWeight="bold"
-              gutterBottom
-              mb={2}
-            >
-              Sua Reserva
-            </Typography>
-            <Grid container spacing={2}>
-              <Grid size={{ xs: 12 }}>
-                <DatePickerInput
-                  name="data"
-                  control={control}
-                  label="Datas e Refeições"
-                />
-              </Grid>
-            </Grid>
-          </Grid>
-
-          <Grid size={12}>
-            <Divider />
-          </Grid>
-
-          <Grid size={12}>
-            <Typography
-              variant="subtitle1"
-              fontWeight="bold"
-              gutterBottom
-              mb={2}
-            >
-              Perfil e Identificação
-            </Typography>
             <Grid container spacing={2} alignItems="flex-start">
               <Grid size={{ xs: 12, md: isAlunoUpf ? 8 : 12 }}>
                 <SelectFieldInput
@@ -136,6 +69,30 @@ export const Formulario = () => {
                   />
                 </Grid>
               )}
+            </Grid>
+          </Grid>
+
+          <Grid size={12}>
+            <Divider />
+          </Grid>
+
+          <Grid size={12}>
+            <Typography
+              variant="subtitle1"
+              fontWeight="bold"
+              gutterBottom
+              mb={2}
+            >
+              Sua Reserva
+            </Typography>
+            <Grid container spacing={2}>
+              <Grid size={{ xs: 12 }}>
+                <DatePickerInput
+                  name="data"
+                  control={control}
+                  label="Datas e Refeições"
+                />
+              </Grid>
             </Grid>
           </Grid>
 
