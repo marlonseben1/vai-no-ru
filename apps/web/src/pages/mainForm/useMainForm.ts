@@ -6,7 +6,7 @@ import {
   useForm,
   useWatch,
 } from 'react-hook-form';
-import { api } from '@/api';
+import { api } from '@/api/api';
 import { useToast } from '@/hooks/useToast';
 import { useAuthStore } from '@/store/auth/authStore';
 
