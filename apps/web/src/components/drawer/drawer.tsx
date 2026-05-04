@@ -1,5 +1,6 @@
 import EventNoteIcon from '@mui/icons-material/EventNote';
-import ListAltIcon from '@mui/icons-material/ListAlt';
+import { BiSolidFoodMenu } from 'react-icons/bi';
+import { FaWpforms } from 'react-icons/fa6';
 import {
   List,
   ListItem,
@@ -25,8 +26,8 @@ export const Drawer = ({ open, onClose }: DrawerProps) => {
   const location = useLocation();
 
   const menuItems = [
-    { text: 'Cardápio', path: '/', icon: <ListAltIcon /> },
-    { text: 'Formulário', path: '/formulario', icon: <ListAltIcon /> },
+    { text: 'Cardápio', path: '/', icon: <BiSolidFoodMenu size={24} /> },
+    { text: 'Formulário', path: '/formulario', icon: <FaWpforms size={24} /> },
     { text: 'Minhas reservas', path: '/reservas', icon: <EventNoteIcon /> },
   ];
 

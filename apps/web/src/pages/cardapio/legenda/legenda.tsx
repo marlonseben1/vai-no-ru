@@ -9,7 +9,7 @@ export function LegendaComponent() {
     <Paper
       elevation={0}
       sx={{
-        p: { xs: 1, sm: 3 },
+        p: { xs: 2.5, sm: 3 },
         border: `1px solid ${colorPalette.neutral[200]}`,
         borderRadius: 2,
         height: '100%',

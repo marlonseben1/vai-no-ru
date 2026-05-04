@@ -1,4 +1,13 @@
-import { Box, Typography } from '@mui/material';
+import { 
+  Box, 
+  Typography, 
+  Accordion, 
+  AccordionSummary, 
+  AccordionDetails,
+  useMediaQuery,
+  useTheme
+} from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import type { CardapioDia } from '@repo/shared';
 import dayjs from 'dayjs';
 import { CustomTabs, type TabItem } from '@/components/customTabs/customTabs';
@@ -12,27 +21,30 @@ export interface CardapioWrapperProps {
 }
 
 export const CardapioWrapper = ({ cardapio, dia }: CardapioWrapperProps) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+  const renderContent = (diaItem: CardapioDia) => (
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: { xs: 'column', md: 'row' },
+        gap: 3,
+        alignItems: 'stretch',
+      }}
+    >
+      <Box sx={{ flex: 1 }}>
+        <Menu refeicao={diaItem} />
+      </Box>
+      <Box sx={{ width: { xs: '100%', md: '350px' }, flexShrink: 0 }}>
+        <LegendaComponent />
+      </Box>
+    </Box>
+  );
+
   const tabs: TabItem[] = cardapio.map((diaItem) => ({
     nome: dayjs(diaItem.data).format('dddd'),
-    children: (
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'row',
-          flexWrap: 'nowrap',
-          gap: 3,
-          alignItems: 'stretch',
-          overflowX: 'auto',
-        }}
-      >
-        <Box sx={{ flex: 1, minWidth: '300px' }}>
-          <Menu refeicao={diaItem} />
-        </Box>
-        <Box sx={{ width: '350px', flexShrink: 0 }}>
-          <LegendaComponent />
-        </Box>
-      </Box>
-    ),
+    children: renderContent(diaItem),
   }));
 
   return (
@@ -42,9 +54,40 @@ export const CardapioWrapper = ({ cardapio, dia }: CardapioWrapperProps) => {
         align="center"
         sx={{ mb: 2, color: colorPalette.neutral[900] }}
       >
-        Cardápio da Semana ({dia})
+        Cardápio da Semana{' '}
+        <Box component="span" sx={{ display: { xs: 'block', md: 'inline' } }}>
+          ({dia})
+        </Box>
       </Typography>
-      <CustomTabs tabs={tabs} />
+
+      {isMobile ? (
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          {cardapio.map((diaItem) => (
+            <Accordion 
+              key={diaItem.data} 
+              elevation={0} 
+              sx={{ 
+                border: `1px solid ${colorPalette.neutral[200]}`,
+                '&:before': { display: 'none' }
+              }}
+            >
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography variant="subtitle1" fontWeight="500" sx={{ textTransform: 'capitalize' }}>
+                  {dayjs(diaItem.data).format('dddd')}
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Menu refeicao={diaItem} />
+              </AccordionDetails>
+            </Accordion>
+          ))}
+          <Box sx={{ mt: 1 }}>
+            <LegendaComponent />
+          </Box>
+        </Box>
+      ) : (
+        <CustomTabs tabs={tabs} />
+      )}
     </Box>
   );
 };

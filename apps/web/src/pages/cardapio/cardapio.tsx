@@ -42,7 +42,10 @@ export default function Cardapio() {
     return (
       <Box sx={{ width: '100%' }}>
         <Typography variant="h6" align="center" sx={{ mb: 2 }}>
-          Cardápio da Semana ({periodoStr})
+          Cardápio da Semana{' '}
+          <Box component="span" sx={{ display: { xs: 'block', md: 'inline' } }}>
+            ({periodoStr})
+          </Box>
         </Typography>
         <Typography
           variant="body1"
