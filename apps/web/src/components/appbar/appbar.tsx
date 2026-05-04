@@ -38,7 +38,7 @@ export const AppBar = ({ onDrawerToggle }: AppBarProps) => {
           fontWeight="bold"
           sx={{ flexGrow: 1 }}
         >
-          Vai no RU hoje?
+          E aí, vai no RU hoje?
         </Typography>
         <AccountMenu />
       </Toolbar>
