@@ -1,5 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { RootLayout } from '@/layout/rootLayout';
+import Cardapio from '@/pages/cardapio/cardapio';
 import { Formulario } from '../pages/formulario/formulario';
 import { Login } from '../pages/login/login';
 import { Reservas } from '../pages/reservas/reservas';
@@ -13,7 +14,8 @@ export const AppRoutes = () => {
       <Routes>
         {token ? (
           <Route element={<RootLayout />}>
-            <Route path="/" element={<Formulario />} />
+            <Route path="/" element={<Cardapio />} />
+            <Route path="/formulario" element={<Formulario />} />
             <Route path="/reservas" element={<Reservas />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>

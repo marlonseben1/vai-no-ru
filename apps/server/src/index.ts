@@ -5,6 +5,7 @@ import utc from 'dayjs/plugin/utc';
 import { Elysia } from 'elysia';
 import { ruAutomationJob } from './jobs/ru-automation';
 import { authRoutes } from './routes/auth';
+import { cardapioRoutes } from './routes/cardapio';
 import { reservaRoutes } from './routes/reserva';
 
 dayjs.extend(utc);
@@ -16,6 +17,7 @@ const app = new Elysia()
   .use(ruAutomationJob)
   .use(reservaRoutes)
   .use(authRoutes)
+  .use(cardapioRoutes)
   .listen(3003);
 
 console.log(`🦊 Elysia (vai-no-ru) rodando na porta ${app.server?.port}`);

@@ -25,7 +25,8 @@ export const Drawer = ({ open, onClose }: DrawerProps) => {
   const location = useLocation();
 
   const menuItems = [
-    { text: 'Formulário', path: '/', icon: <ListAltIcon /> },
+    { text: 'Cardápio', path: '/', icon: <ListAltIcon /> },
+    { text: 'Formulário', path: '/formulario', icon: <ListAltIcon /> },
     { text: 'Minhas reservas', path: '/reservas', icon: <EventNoteIcon /> },
   ];
 

@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material';
 import { type CredentialResponse, GoogleLogin } from '@react-oauth/google';
 import { colorPalette } from '@/styles/colorPalette';
-import { api } from '../../api';
+import { api } from '../../api/api';
 import { useToast } from '../../hooks/useToast';
 import { useAuthStore } from '../../store/auth/authStore';
 
