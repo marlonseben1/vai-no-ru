@@ -1,6 +1,6 @@
-import { jwt } from '@elysiajs/jwt';
 import { ruFormSchema } from '@repo/shared';
 import { Elysia, t } from 'elysia';
+import { authPlugin } from '@/plugins/auth';
 import {
   cancelarReserva,
   getHistoricoReserva,
@@ -9,33 +9,8 @@ import {
   reativarReserva,
 } from '@/services/reserva/reserva';
 
-if (!process.env.JWT_SECRET) {
-  throw new Error('A variável JWT_SECRET não está definida');
-}
-
 export const reservaRoutes = new Elysia()
-  .use(jwt({ name: 'jwt', secret: process.env.JWT_SECRET }))
-  .derive(async ({ jwt, headers: { authorization } }) => {
-    const token = authorization?.startsWith('Bearer ')
-      ? authorization.slice(7)
-      : null;
-
-    if (!token) return { currentUserId: null as string | null };
-
-    const payload = await jwt.verify(token);
-    if (!payload) return { currentUserId: null as string | null };
-    return {
-      currentUserId: payload.sub
-        ? String(payload.sub)
-        : (null as string | null),
-    };
-  })
-  .onBeforeHandle(({ currentUserId, set }) => {
-    if (!currentUserId) {
-      set.status = 401;
-      return { success: false, message: 'Token ausente ou inválido.' };
-    }
-  })
+  .use(authPlugin)
   .post(
     '/reserva',
     ({ body, currentUserId }) => {
