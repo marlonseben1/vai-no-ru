@@ -1,7 +1,7 @@
 import { jwt } from '@elysiajs/jwt';
 import { Elysia, t } from 'elysia';
 import { OAuth2Client } from 'google-auth-library';
-import { db } from '../db/schema';
+import { db } from '@/db/schema';
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -33,9 +33,17 @@ export const authRoutes = new Elysia({ prefix: '/auth' })
         }
 
         const user = db
-          .query('SELECT id, nome, email FROM users WHERE email = ?')
+          .query(
+            'SELECT id, nome, email, perfil, matricula FROM users WHERE email = ?',
+          )
           .get(payload.email) as
-          | { id: string; nome: string; email: string }
+          | {
+              id: string;
+              nome: string;
+              email: string;
+              perfil: string | null;
+              matricula: string | null;
+            }
           | undefined;
 
         if (!user) {
@@ -57,6 +65,8 @@ export const authRoutes = new Elysia({ prefix: '/auth' })
             email: user.email,
             name: user.nome,
             picture: payload.picture,
+            perfil: user.perfil,
+            matricula: user.matricula,
           },
         };
       } catch (_) {

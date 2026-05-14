@@ -1,5 +1,5 @@
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Button, Divider, Grid, Paper, Stack, Typography } from '@mui/material';
+import { Button, Divider, Grid, Paper, Stack, TextField, Typography } from '@mui/material';
 import { perfilOptions } from '@/shared/constants/constants';
 import { DatePickerInput } from '../../components/datePickerInput/datePickerInput';
 import { SelectFieldInput } from '../../components/selectFieldInput/selectFieldInput';
@@ -7,7 +7,7 @@ import { TextFieldInput } from '../../components/textFieldInput/textFieldInput';
 import { useFormulario } from './useFormulario';
 
 export const Formulario = () => {
-  const { reset, control, onError, onSubmit, isAlunoUpf, handleSubmit } =
+  const { reset, control, onError, onSubmit, isAlunoUpf, handleSubmit, userEmail } =
     useFormulario();
 
   return (
@@ -18,31 +18,26 @@ export const Formulario = () => {
       <form onSubmit={handleSubmit(onSubmit, onError)} noValidate>
         <Grid container spacing={4}>
           <Grid size={12}>
-            <Typography
-              variant="subtitle1"
-              fontWeight="bold"
-              gutterBottom
-              mb={2}
-            >
+            <Typography variant="titleXS" gutterBottom mb={2}>
               Perfil e Identificação
             </Typography>
             <Grid container spacing={2}>
+              
               <Grid size={{ xs: 12, md: 6 }}>
+                <TextField
+                  fullWidth
+                  disabled
+                  label="E-mail"
+                  value={userEmail}
+                  slotProps={{ inputLabel: { shrink: true } }}
+                />
+              </Grid><Grid size={{ xs: 12, md: 6 }}>
                 <TextFieldInput
                   name="nome"
                   required
                   control={control}
                   label="Nome completo"
                   placeholder="Seu nome"
-                />
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <TextFieldInput
-                  name="email"
-                  control={control}
-                  required
-                  label="E-mail"
-                  placeholder="exemplo@upf.br"
                 />
               </Grid>
             </Grid>
@@ -77,12 +72,7 @@ export const Formulario = () => {
           </Grid>
 
           <Grid size={12}>
-            <Typography
-              variant="subtitle1"
-              fontWeight="bold"
-              gutterBottom
-              mb={2}
-            >
+            <Typography variant="titleXS" gutterBottom mb={2}>
               Sua Reserva
             </Typography>
             <Grid container spacing={2}>

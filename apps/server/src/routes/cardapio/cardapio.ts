@@ -1,6 +1,6 @@
 import { getCardapioQuerySchema } from '@repo/shared';
 import { Elysia } from 'elysia';
-import { getCardapio } from '../services/cardapio';
+import { getCardapio } from '@/services/cardapio/cardapio';
 
 export const cardapioRoutes = new Elysia().get(
   '/cardapio',

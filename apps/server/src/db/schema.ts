@@ -20,8 +20,20 @@ db.run(`
     data_reserva TEXT NOT NULL,
     refeicao TEXT NOT NULL,
     processado INTEGER DEFAULT 0,
+    status INTEGER NOT NULL DEFAULT 0,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY(user_id) REFERENCES users(id)
+    FOREIGN KEY(user_id) REFERENCES users(id),
+    UNIQUE(user_id, data_reserva, refeicao)
+  );
+`);
+
+db.run(`
+  CREATE TABLE IF NOT EXISTS reserva_historico (
+    id TEXT PRIMARY KEY,
+    reserva_id TEXT NOT NULL,
+    acao TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(reserva_id) REFERENCES schedules(id)
   );
 `);
 

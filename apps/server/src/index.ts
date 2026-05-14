@@ -4,9 +4,9 @@ import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import { Elysia } from 'elysia';
 import { ruAutomationJob } from './jobs/ru-automation';
-import { authRoutes } from './routes/auth';
-import { cardapioRoutes } from './routes/cardapio';
-import { reservaRoutes } from './routes/reserva';
+import { authRoutes } from './routes/auth/auth';
+import { cardapioRoutes } from './routes/cardapio/cardapio';
+import { reservaRoutes } from './routes/reserva/reserva';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
