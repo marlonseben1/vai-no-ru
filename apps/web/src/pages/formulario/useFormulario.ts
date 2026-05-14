@@ -14,15 +14,15 @@ export const useFormulario = () => {
   const { showToast } = useToast();
   const user = useAuthStore((state) => state.user);
   const logout = useAuthStore((state) => state.logout);
+  const updateUser = useAuthStore((state) => state.updateUser);
 
   const { control, handleSubmit, reset } = useForm<RuUpfData>({
     resolver: zodResolver(ruFormSchema),
     defaultValues: {
-      email: user?.email || '',
       data: [],
-      matricula: '',
+      matricula: user?.matricula || '',
       nome: user?.name || '',
-      perfil: 'Aluno graduação UPF',
+      perfil: (user?.perfil as RuUpfData['perfil']) || 'Aluno graduação UPF',
     },
   });
 
@@ -32,8 +32,9 @@ export const useFormulario = () => {
   const onSubmit: SubmitHandler<RuUpfData> = async (data) => {
     try {
       await api.post('/reserva', data);
+      updateUser({ name: data.nome, perfil: data.perfil, matricula: data.matricula });
       showToast('Reserva registrada com sucesso!', 'success');
-      reset({ ...data, data: [] }); // Mantém nome, email, matrícula e reseta só a data
+      reset({ ...data, data: [] });
     } catch (_) {
       showToast('Erro ao agendar a reserva.', 'error');
     }
@@ -52,5 +53,6 @@ export const useFormulario = () => {
     onSubmit,
     isAlunoUpf,
     handleSubmit,
+    userEmail: user?.email ?? '',
   };
 };

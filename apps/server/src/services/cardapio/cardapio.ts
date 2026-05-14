@@ -1,5 +1,5 @@
 import type { CardapioDia, GetCardapioQuery } from '@repo/shared';
-import { db } from '../db/schema';
+import { db } from '../../db/schema';
 
 export function getCardapio(params: GetCardapioQuery): CardapioDia[] {
   let query = 'SELECT * FROM cardapio WHERE universidade = ?';

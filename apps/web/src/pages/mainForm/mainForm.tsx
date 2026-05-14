@@ -7,6 +7,7 @@ import {
   Grid,
   Paper,
   Stack,
+  TextField,
   Typography,
 } from '@mui/material';
 import { perfilOptions } from '@/shared/constants/constants';
@@ -24,6 +25,7 @@ export const MainForm = () => {
     onSubmit,
     isAlunoUpf,
     handleSubmit,
+    userEmail,
   } = useMainForm();
 
   return (
@@ -84,12 +86,12 @@ export const MainForm = () => {
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
-                <TextFieldInput
-                  name="email"
-                  control={control}
-                  required
+                <TextField
+                  fullWidth
+                  disabled
                   label="E-mail"
-                  placeholder="exemplo@upf.br"
+                  value={userEmail}
+                  slotProps={{ inputLabel: { shrink: true } }}
                 />
               </Grid>
             </Grid>

@@ -155,6 +155,23 @@ const baseTheme = createTheme({
     borderRadius: 12,
   },
   components: {
+    MuiTypography: {
+      defaultProps: {
+        variantMapping: {
+          titleXXL: 'h1',
+          titleXL: 'h2',
+          titleLG: 'h3',
+          titleMD: 'h4',
+          titleSM: 'h5',
+          titleXS: 'h6',
+          bodyLG: 'p',
+          bodyMD: 'p',
+          bodySM: 'p',
+          bodyXS: 'p',
+          bodyXXS: 'p',
+        },
+      },
+    },
     MuiButton: {
       styleOverrides: {
         root: {
@@ -191,6 +208,9 @@ const baseTheme = createTheme({
           '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
             borderColor: colorPalette.primary[500],
             borderWidth: '2px',
+          },
+          '&.Mui-disabled': {
+            backgroundColor: colorPalette.neutral[100],
           },
         },
         notchedOutline: {

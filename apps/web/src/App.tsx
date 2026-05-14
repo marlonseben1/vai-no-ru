@@ -1,11 +1,10 @@
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { GoogleOAuthProvider } from '@react-oauth/google';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { queryClient } from './api/queryClient';
 import { ToastProvider } from './providers/toastProvider';
 import { AppRoutes } from './routes/routes';
 import { theme } from './styles/theme';
-
-const queryClient = new QueryClient();
 
 function App() {
   return (
