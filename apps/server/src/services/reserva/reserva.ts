@@ -72,12 +72,10 @@ export async function getReservasByUser(
     id: r.id,
     data_reserva: r.data_reserva,
     refeicao: r.refeicao,
-    status: (
-      r.data_reserva < today ? RESERVA_STATUS.INATIVA : r.status
-    ) as ReservaItem['status'],
-    created_at: r.created_at
-      ? dayjs(r.created_at).toISOString()
-      : '',
+    status: (r.data_reserva < today
+      ? RESERVA_STATUS.INATIVA
+      : r.status) as ReservaItem['status'],
+    created_at: r.created_at ? dayjs(r.created_at).toISOString() : '',
   }));
 
   return { data, total, page, pageSize };
@@ -157,7 +155,8 @@ export async function reativarReserva(
   reservaId: string,
   userId: string,
 ): Promise<
-  { success: true } | { success: false; reason: 'not_found' | 'cannot_reactivate' }
+  | { success: true }
+  | { success: false; reason: 'not_found' | 'cannot_reactivate' }
 > {
   return prisma.$transaction(async (tx) => {
     const reserva = await tx.schedules.findFirst({
@@ -199,15 +198,19 @@ export async function processReserva(
       },
     });
 
+    const datas = body.data.map((item) =>
+      dayjs(item.data).format('YYYY-MM-DD'),
+    );
+    const existentes = await tx.schedules.findMany({
+      where: { user_id: userId, data_reserva: { in: datas } },
+      select: { data_reserva: true },
+    });
+    const datasExistentes = new Set(existentes.map((e) => e.data_reserva));
+
     for (const item of body.data) {
       const formattedDate = dayjs(item.data).format('YYYY-MM-DD');
 
-      const existing = await tx.schedules.findFirst({
-        where: { user_id: userId, data_reserva: formattedDate, refeicao: item.refeicao },
-        select: { id: true },
-      });
-
-      if (existing) continue;
+      if (datasExistentes.has(formattedDate)) continue;
 
       const reservaId = crypto.randomUUID();
       await tx.schedules.create({

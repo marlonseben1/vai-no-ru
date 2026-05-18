@@ -18,6 +18,8 @@ export const reservaDiaSchema = z.object({
   refeicao: refeicaoEnum,
 });
 
+export type ReservaDia = z.infer<typeof reservaDiaSchema>;
+
 export const ruFormSchema = z
   .object({
     nome: z.string().min(3, 'O nome deve conter pelo menos 3 caracteres'),
@@ -28,7 +30,11 @@ export const ruFormSchema = z
     perfil: perfilEnum,
     data: z
       .array(reservaDiaSchema)
-      .min(1, 'Você deve informar pelo menos uma data'),
+      .min(1, 'Você deve informar pelo menos uma data')
+      .refine((dias) => {
+        const hoje = new Date().toISOString().slice(0, 10);
+        return dias.every((d) => d.data.slice(0, 10) >= hoje);
+      }, 'Não é possível reservar datas passadas'),
   })
   .superRefine((data, ctx) => {
     if (

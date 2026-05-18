@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import { iconesMapa, coresMapa } from '@/constants/constants.ts';
+import { coresMapa, iconesMapa } from '@/constants/constants.ts';
 import { colorPalette } from '@/styles/colorPalette.ts';
 
 export function LegendaComponent() {
@@ -99,10 +99,7 @@ export function LegendaComponent() {
           </Typography>
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-          <Box
-            component="span"
-            sx={{ display: 'flex', color: coresMapa.ovo }}
-          >
+          <Box component="span" sx={{ display: 'flex', color: coresMapa.ovo }}>
             {iconesMapa.ovo &&
               (() => {
                 const Icon = iconesMapa.ovo;

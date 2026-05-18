@@ -12,7 +12,11 @@ import { RESERVA_STATUS, type ReservaStatus } from '@repo/shared';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { useState } from 'react';
-import { MdOutlineCancel, MdOutlineHistory, MdOutlineReplay } from 'react-icons/md';
+import {
+  MdOutlineCancel,
+  MdOutlineHistory,
+  MdOutlineReplay,
+} from 'react-icons/md';
 import { RxHamburgerMenu } from 'react-icons/rx';
 import 'dayjs/locale/pt-br';
 import { QUERY_KEYS } from '@/api/queryKeys';
@@ -30,7 +34,10 @@ interface ReservaCardProps {
 
 const STATUS_CONFIG: Record<
   ReservaStatus,
-  { label: string; color: 'primary' | 'success' | 'error' | 'warning' | 'default' }
+  {
+    label: string;
+    color: 'primary' | 'success' | 'error' | 'warning' | 'default';
+  }
 > = {
   [RESERVA_STATUS.PENDENTE]: { label: 'Pendente', color: 'primary' },
   [RESERVA_STATUS.AGENDADA]: { label: 'Agendada', color: 'success' },
@@ -149,7 +156,10 @@ export function ReservaCard({ reserva }: ReservaCardProps) {
         )}
         {!deveExibirCancelar && !deveExibirReativar && (
           <MenuItem disabled>
-            <Typography variant="bodySM" sx={{ color: colorPalette.neutral[400] }}>
+            <Typography
+              variant="bodySM"
+              sx={{ color: colorPalette.neutral[400] }}
+            >
               Sem ações disponíveis
             </Typography>
           </MenuItem>

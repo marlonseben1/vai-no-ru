@@ -21,24 +21,58 @@ import {
   PickersDay,
   type PickersDayProps,
 } from '@mui/x-date-pickers/PickersDay';
+import type { ReservaDia } from '@repo/shared';
+import type { Dayjs } from 'dayjs';
+import { useCallback } from 'react';
 import useIsMobile from '@/hooks/useIsMobile';
 import { refeicaoOptions } from '@/shared/constants/constants';
 import { colorPalette } from '@/styles/colorPalette';
 import { SelectFieldInput } from '../selectFieldInput/selectFieldInput';
 import { useDatePickerDialog } from './useDatePickerDialog';
 
-export interface DateMeal {
-  data: string;
-  refeicao: string;
-}
+export type { ReservaDia as DateMeal };
 
 interface DatePickerDialogProps {
   open: boolean;
   onClose: () => void;
-  value: DateMeal[];
-  onChange: (newValues: DateMeal[]) => void;
+  value: ReservaDia[];
+  onChange: (newValues: ReservaDia[]) => void;
   label?: string;
   calendarProps?: Omit<DateCalendarProps, 'value' | 'onChange'>;
+  diasBloqueados?: string[];
+}
+
+function CustomDay({
+  selectedDates,
+  diasBloqueados,
+  ...props
+}: PickersDayProps & {
+  selectedDates: Array<{ date: Dayjs; refeicao: string }>;
+  diasBloqueados: string[];
+}) {
+  const isSelected = selectedDates.some((d) => d.date.isSame(props.day, 'day'));
+  const isBloqueado = diasBloqueados.includes(props.day.format('YYYY-MM-DD'));
+
+  return (
+    <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+      <PickersDay {...props} selected={isSelected} />
+      {isBloqueado && (
+        <Box
+          sx={{
+            position: 'absolute',
+            bottom: 2,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: 4,
+            height: 4,
+            borderRadius: '50%',
+            bgcolor: colorPalette.success.main,
+            pointerEvents: 'none',
+          }}
+        />
+      )}
+    </Box>
+  );
 }
 
 export function DatePickerDialog({
@@ -48,6 +82,7 @@ export function DatePickerDialog({
   onChange,
   label,
   calendarProps,
+  diasBloqueados,
 }: DatePickerDialogProps) {
   const isMobile = useIsMobile();
   const {
@@ -57,13 +92,16 @@ export function DatePickerDialog({
     handleRemoveDate,
   } = useDatePickerDialog({ value, onChange });
 
-  const CustomDay = (props: PickersDayProps) => {
-    const isSelected = selectedDates.some((d) =>
-      d.date.isSame(props.day, 'day'),
-    );
-
-    return <PickersDay {...props} selected={isSelected} />;
-  };
+  const diaPersonalizado = useCallback(
+    (props: PickersDayProps) => (
+      <CustomDay
+        {...props}
+        selectedDates={selectedDates}
+        diasBloqueados={diasBloqueados ?? []}
+      />
+    ),
+    [selectedDates, diasBloqueados],
+  );
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -106,11 +144,13 @@ export function DatePickerDialog({
           >
             <DateCalendar
               {...calendarProps}
+              disablePast
               value={null}
               onChange={handleToggleDate}
-              slots={{
-                day: CustomDay,
-              }}
+              shouldDisableDate={(date) =>
+                (diasBloqueados ?? []).includes(date.format('YYYY-MM-DD'))
+              }
+              slots={{ day: diaPersonalizado }}
             />
           </Box>
           {selectedDates.length > 0 && (
@@ -174,7 +214,7 @@ export function DatePickerDialog({
                             onChange={(e) =>
                               handleChangeRefeicao(
                                 d.date,
-                                e.target.value as string,
+                                e.target.value as ReservaDia['refeicao'],
                               )
                             }
                             options={refeicaoOptions}

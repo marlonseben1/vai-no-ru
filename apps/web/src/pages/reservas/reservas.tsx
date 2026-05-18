@@ -44,7 +44,12 @@ export const Reservas = () => {
       )}
 
       {isError && (
-        <Typography variant="bodyMD" sx={{ color: colorPalette.error.main }} textAlign="center" py={6}>
+        <Typography
+          variant="bodyMD"
+          sx={{ color: colorPalette.error.main }}
+          textAlign="center"
+          py={6}
+        >
           Erro ao carregar as reservas. Tente novamente.
         </Typography>
       )}

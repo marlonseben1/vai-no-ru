@@ -1,16 +1,10 @@
 {
   "compilerOptions": {
     // Environment setup & latest features
-    "lib": [
-      "ESNext",
-      "DOM",
-      "DOM.Iterable"
-    ],
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "baseUrl": ".",
     "paths": {
-      "@repo/shared": [
-        "./packages/shared/index.ts"
-      ]
+      "@repo/shared": ["./packages/shared/index.ts"]
     },
     "target": "ESNext",
     "module": "Preserve",

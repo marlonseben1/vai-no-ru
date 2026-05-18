@@ -14,7 +14,7 @@ export const reservaRoutes = new Elysia()
   .post(
     '/reserva',
     async ({ body, currentUserId }) => {
-      await processReserva(body, currentUserId as string);
+      await processReserva(body, currentUserId);
       return {
         success: true,
         message: `Agendamento de ${body.data.length} dias concluído.`,
@@ -25,7 +25,7 @@ export const reservaRoutes = new Elysia()
   .get(
     '/reservas',
     async ({ currentUserId, query }) => {
-      return getReservasByUser(currentUserId as string, {
+      return getReservasByUser(currentUserId, {
         page: query.page,
         pageSize: query.pageSize,
         sort: query.sort,
@@ -42,7 +42,7 @@ export const reservaRoutes = new Elysia()
     },
   )
   .delete('/reservas/:id', async ({ currentUserId, params, set }) => {
-    const result = await cancelarReserva(params.id, currentUserId as string);
+    const result = await cancelarReserva(params.id, currentUserId);
     if (!result.success) {
       set.status = result.reason === 'cannot_cancel' ? 422 : 404;
       return {
@@ -57,7 +57,7 @@ export const reservaRoutes = new Elysia()
     return { success: true, message: 'Reserva cancelada com sucesso.' };
   })
   .get('/reservas/:id/historico', async ({ currentUserId, params, set }) => {
-    const historico = await getHistoricoReserva(params.id, currentUserId as string);
+    const historico = await getHistoricoReserva(params.id, currentUserId);
     if (!historico) {
       set.status = 404;
       return { success: false, message: 'Reserva não encontrada.' };
@@ -65,7 +65,7 @@ export const reservaRoutes = new Elysia()
     return historico;
   })
   .put('/reservas/:id', async ({ currentUserId, params, set }) => {
-    const result = await reativarReserva(params.id, currentUserId as string);
+    const result = await reativarReserva(params.id, currentUserId);
     if (!result.success) {
       set.status = result.reason === 'cannot_reactivate' ? 422 : 404;
       return {

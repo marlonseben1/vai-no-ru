@@ -1,6 +1,9 @@
 import { api } from '../api';
 import type { DefaultListParams } from '../types';
-import type { ReservaHistoricoItem, ReservasListResponse } from './reservas.types';
+import type {
+  ReservaHistoricoItem,
+  ReservasListResponse,
+} from './reservas.types';
 
 export const reservasApi = {
   async fetchReservas(
@@ -20,6 +23,8 @@ export const reservasApi = {
   },
 
   async fetchHistorico(id: string): Promise<ReservaHistoricoItem[]> {
-    return api.get<ReservaHistoricoItem[]>(`/reservas/${id}/historico`).then((res) => res.data);
+    return api
+      .get<ReservaHistoricoItem[]>(`/reservas/${id}/historico`)
+      .then((res) => res.data);
   },
 };

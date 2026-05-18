@@ -1,6 +1,8 @@
 export type ApiResponse<TResp> = Promise<TResp & { status: number }>;
 export type ApiResponseData<TData> = ApiResponse<{ data: TData }>;
-export type ApiResponseMessages<TMessages> = ApiResponse<{ messages: TMessages }>;
+export type ApiResponseMessages<TMessages> = ApiResponse<{
+  messages: TMessages;
+}>;
 
 export interface DefaultListParams {
   page?: number;

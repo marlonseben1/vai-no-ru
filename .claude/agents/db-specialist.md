@@ -15,6 +15,7 @@ Você é um especialista em banco de dados neste projeto.
 ## Migração futura
 
 O projeto planeja migrar para Prisma ORM. Ao propor mudanças de schema:
+
 - Mantenha compatibilidade com a migração futura
 - Prefira estruturas que o Prisma suporta nativamente
 - Documente decisões de schema que impactam a migração

@@ -1,13 +1,13 @@
-import { 
-  Box, 
-  Typography, 
-  Accordion, 
-  AccordionSummary, 
-  AccordionDetails,
-  useMediaQuery,
-  useTheme
-} from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 import type { CardapioDia } from '@repo/shared';
 import dayjs from 'dayjs';
 import { CustomTabs, type TabItem } from '@/components/customTabs/customTabs';
@@ -63,16 +63,20 @@ export const CardapioWrapper = ({ cardapio, dia }: CardapioWrapperProps) => {
       {isMobile ? (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           {cardapio.map((diaItem) => (
-            <Accordion 
-              key={diaItem.data} 
-              elevation={0} 
-              sx={{ 
+            <Accordion
+              key={diaItem.data}
+              elevation={0}
+              sx={{
                 border: `1px solid ${colorPalette.neutral[200]}`,
-                '&:before': { display: 'none' }
+                '&:before': { display: 'none' },
               }}
             >
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography variant="subtitle1" fontWeight="500" sx={{ textTransform: 'capitalize' }}>
+                <Typography
+                  variant="subtitle1"
+                  fontWeight="500"
+                  sx={{ textTransform: 'capitalize' }}
+                >
                   {dayjs(diaItem.data).format('dddd')}
                 </Typography>
               </AccordionSummary>
