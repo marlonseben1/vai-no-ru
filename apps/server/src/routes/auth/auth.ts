@@ -1,7 +1,7 @@
 import { jwt } from '@elysiajs/jwt';
 import { Elysia, t } from 'elysia';
 import { OAuth2Client } from 'google-auth-library';
-import { db } from '@/db/schema';
+import { prisma } from '@/db/client';
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -32,25 +32,20 @@ export const authRoutes = new Elysia({ prefix: '/auth' })
           return { error: 'Payload do Google inválido ou sem e-mail' };
         }
 
-        const user = db
-          .query(
-            'SELECT id, nome, email, perfil, matricula FROM users WHERE email = ?',
-          )
-          .get(payload.email) as
-          | {
-              id: string;
-              nome: string;
-              email: string;
-              perfil: string | null;
-              matricula: string | null;
-            }
-          | undefined;
+        const user = await prisma.users.findUnique({
+          where: { email: payload.email },
+          select: {
+            id: true,
+            nome: true,
+            email: true,
+            perfil: true,
+            matricula: true,
+          },
+        });
 
         if (!user) {
           set.status = 403;
-          return {
-            error: 'Usuário não existe.',
-          };
+          return { error: 'Usuário não existe.' };
         }
 
         const authToken = await jwt.sign({

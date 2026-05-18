@@ -38,3 +38,5 @@ instance.db
 *.db
 *.sqlite
 *.sqlite3
+/generated/prisma
+src/db/prisma/

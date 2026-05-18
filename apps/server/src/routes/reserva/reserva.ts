@@ -13,8 +13,8 @@ export const reservaRoutes = new Elysia()
   .use(authPlugin)
   .post(
     '/reserva',
-    ({ body, currentUserId }) => {
-      processReserva(body, currentUserId!);
+    async ({ body, currentUserId }) => {
+      await processReserva(body, currentUserId as string);
       return {
         success: true,
         message: `Agendamento de ${body.data.length} dias concluído.`,
@@ -24,8 +24,8 @@ export const reservaRoutes = new Elysia()
   )
   .get(
     '/reservas',
-    ({ currentUserId, query }) => {
-      return getReservasByUser(currentUserId!, {
+    async ({ currentUserId, query }) => {
+      return getReservasByUser(currentUserId as string, {
         page: query.page,
         pageSize: query.pageSize,
         sort: query.sort,
@@ -41,8 +41,8 @@ export const reservaRoutes = new Elysia()
       }),
     },
   )
-  .delete('/reservas/:id', ({ currentUserId, params, set }) => {
-    const result = cancelarReserva(params.id, currentUserId!);
+  .delete('/reservas/:id', async ({ currentUserId, params, set }) => {
+    const result = await cancelarReserva(params.id, currentUserId as string);
     if (!result.success) {
       set.status = result.reason === 'cannot_cancel' ? 422 : 404;
       return {
@@ -56,16 +56,16 @@ export const reservaRoutes = new Elysia()
 
     return { success: true, message: 'Reserva cancelada com sucesso.' };
   })
-  .get('/reservas/:id/historico', ({ currentUserId, params, set }) => {
-    const historico = getHistoricoReserva(params.id, currentUserId!);
+  .get('/reservas/:id/historico', async ({ currentUserId, params, set }) => {
+    const historico = await getHistoricoReserva(params.id, currentUserId as string);
     if (!historico) {
       set.status = 404;
       return { success: false, message: 'Reserva não encontrada.' };
     }
     return historico;
   })
-  .put('/reservas/:id', ({ currentUserId, params, set }) => {
-    const result = reativarReserva(params.id, currentUserId!);
+  .put('/reservas/:id', async ({ currentUserId, params, set }) => {
+    const result = await reativarReserva(params.id, currentUserId as string);
     if (!result.success) {
       set.status = result.reason === 'cannot_reactivate' ? 422 : 404;
       return {
