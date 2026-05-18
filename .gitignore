@@ -22,3 +22,4 @@ instance.db
 *.db
 *.sqlite
 *.sqlite3
+apps/server/src/db/prisma/

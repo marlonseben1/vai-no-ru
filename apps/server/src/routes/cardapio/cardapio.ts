@@ -5,12 +5,10 @@ import { getCardapio } from '@/services/cardapio/cardapio';
 
 export const cardapioRoutes = new Elysia()
   .use(authPlugin)
-  .get(
-  '/cardapio',
-  ({ query, set }) => {
+  .get('/cardapio', async ({ query, set }) => {
     try {
       const parsedQuery = getCardapioQuerySchema.parse(query);
-      const cardapio = getCardapio(parsedQuery);
+      const cardapio = await getCardapio(parsedQuery);
       return {
         success: true,
         data: cardapio,
@@ -23,5 +21,4 @@ export const cardapioRoutes = new Elysia()
         error,
       };
     }
-  },
-);
+  });

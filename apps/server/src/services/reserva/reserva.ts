@@ -1,6 +1,6 @@
 import { RESERVA_STATUS, type RuUpfData } from '@repo/shared';
 import dayjs from 'dayjs';
-import { db } from '@/db/schema';
+import { prisma } from '@/db/client';
 import type {
   PaginatedReservas,
   ReservaAcao,
@@ -19,19 +19,29 @@ const ALLOWED_SORT_COLUMNS = [
 ] as const;
 type AllowedSortColumn = (typeof ALLOWED_SORT_COLUMNS)[number];
 
-function registrarHistorico(reservaId: string, acao: ReservaAcao) {
-  db.prepare(
-    `INSERT INTO reserva_historico (id, reserva_id, acao) VALUES (?, ?, ?)`,
-  ).run(crypto.randomUUID(), reservaId, acao);
+type ClienteTx = Pick<typeof prisma, 'reserva_historico'>;
+
+async function registrarHistorico(
+  cliente: ClienteTx,
+  reservaId: string,
+  acao: ReservaAcao,
+): Promise<void> {
+  await cliente.reserva_historico.create({
+    data: {
+      id: crypto.randomUUID(),
+      reserva_id: reservaId,
+      acao,
+    },
+  });
 }
 
-export function getReservasByUser(
+export async function getReservasByUser(
   userId: string,
   params: ReservaListParams,
-): PaginatedReservas {
+): Promise<PaginatedReservas> {
   const page = Math.max(1, params.page ?? 1);
   const pageSize = Math.min(100, Math.max(1, params.pageSize ?? 10));
-  const order = params.order === 'asc' ? 'ASC' : 'DESC';
+  const order = params.order === 'asc' ? 'asc' : 'desc';
   const sortColumn: AllowedSortColumn = ALLOWED_SORT_COLUMNS.includes(
     params.sort as AllowedSortColumn,
   )
@@ -39,142 +49,177 @@ export function getReservasByUser(
     : 'data_reserva';
 
   const offset = (page - 1) * pageSize;
+  const today = dayjs().format('YYYY-MM-DD');
 
-  const { count } = db
-    .prepare('SELECT COUNT(*) as count FROM schedules WHERE user_id = ?')
-    .get(userId) as { count: number };
+  const [total, rows] = await Promise.all([
+    prisma.schedules.count({ where: { user_id: userId } }),
+    prisma.schedules.findMany({
+      where: { user_id: userId },
+      orderBy: { [sortColumn]: order },
+      skip: offset,
+      take: pageSize,
+      select: {
+        id: true,
+        data_reserva: true,
+        refeicao: true,
+        status: true,
+        created_at: true,
+      },
+    }),
+  ]);
 
-  const data = db
-    .prepare(
-      `SELECT id, data_reserva, refeicao,
-              CASE WHEN data_reserva < date('now') THEN ? ELSE status END as status,
-              created_at
-       FROM schedules
-       WHERE user_id = ?
-       ORDER BY ${sortColumn} ${order}
-       LIMIT ? OFFSET ?`,
-    )
-    .all(RESERVA_STATUS.INATIVA, userId, pageSize, offset) as ReservaItem[];
+  const data: ReservaItem[] = rows.map((r) => ({
+    id: r.id,
+    data_reserva: r.data_reserva,
+    refeicao: r.refeicao,
+    status: (
+      r.data_reserva < today ? RESERVA_STATUS.INATIVA : r.status
+    ) as ReservaItem['status'],
+    created_at: r.created_at
+      ? dayjs(r.created_at).toISOString()
+      : '',
+  }));
 
-  return { data, total: count, page, pageSize };
+  return { data, total, page, pageSize };
 }
 
-export function getHistoricoReserva(
+export async function getHistoricoReserva(
   reservaId: string,
   userId: string,
-): ReservaHistoricoItem[] | null {
-  const reserva = db
-    .prepare(`SELECT id, created_at FROM schedules WHERE id = ? AND user_id = ?`)
-    .get(reservaId, userId) as { id: string; created_at: string } | null;
+): Promise<ReservaHistoricoItem[] | null> {
+  const reserva = await prisma.schedules.findFirst({
+    where: { id: reservaId, user_id: userId },
+    select: { id: true, created_at: true },
+  });
 
   if (!reserva) return null;
 
-  const historico = db
-    .prepare(
-      `SELECT id, reserva_id, acao, created_at FROM reserva_historico WHERE reserva_id = ? ORDER BY created_at ASC`,
-    )
-    .all(reservaId) as ReservaHistoricoItem[];
+  const historico = await prisma.reserva_historico.findMany({
+    where: { reserva_id: reservaId },
+    orderBy: { created_at: 'asc' },
+    select: { id: true, reserva_id: true, acao: true, created_at: true },
+  });
 
   if (historico.length === 0) {
     const entradaCriada: ReservaHistoricoItem = {
       id: 'retroativo',
       reserva_id: reservaId,
       acao: 'criada',
-      created_at: reserva.created_at,
+      created_at: reserva.created_at
+        ? dayjs(reserva.created_at).toISOString()
+        : '',
     };
     return [entradaCriada];
   }
 
-  return historico;
+  return historico.map((h) => ({
+    id: h.id,
+    reserva_id: h.reserva_id,
+    acao: h.acao as ReservaAcao,
+    created_at: h.created_at ? dayjs(h.created_at).toISOString() : '',
+  }));
 }
 
-export function cancelarReserva(
+export async function cancelarReserva(
   reservaId: string,
   userId: string,
-): { success: true } | { success: false; reason: 'not_found' | 'cannot_cancel' } {
-  const reserva = db
-    .prepare(
-      `SELECT id, status, data_reserva FROM schedules WHERE id = ? AND user_id = ?`,
-    )
-    .get(reservaId, userId) as {
-    id: string;
-    status: number;
-    data_reserva: string;
-  } | null;
+): Promise<
+  { success: true } | { success: false; reason: 'not_found' | 'cannot_cancel' }
+> {
+  return prisma.$transaction(async (tx) => {
+    const reserva = await tx.schedules.findFirst({
+      where: { id: reservaId, user_id: userId },
+      select: { id: true, status: true, data_reserva: true },
+    });
 
-  if (!reserva) return { success: false, reason: 'not_found' };
+    if (!reserva) return { success: false, reason: 'not_found' as const };
 
-  const ePassado = reserva.data_reserva < dayjs().format('YYYY-MM-DD');
-  const podeCancelar =
-    !ePassado &&
-    (reserva.status === RESERVA_STATUS.PENDENTE ||
-      reserva.status === RESERVA_STATUS.NAO_AGENDADA);
+    const ePassado = reserva.data_reserva < dayjs().format('YYYY-MM-DD');
+    const podeCancelar =
+      !ePassado &&
+      (reserva.status === RESERVA_STATUS.PENDENTE ||
+        reserva.status === RESERVA_STATUS.NAO_AGENDADA);
 
-  if (!podeCancelar) return { success: false, reason: 'cannot_cancel' };
+    if (!podeCancelar)
+      return { success: false, reason: 'cannot_cancel' as const };
 
-  db.prepare('UPDATE schedules SET status = ? WHERE id = ?').run(
-    RESERVA_STATUS.CANCELADA,
-    reservaId,
-  );
-  registrarHistorico(reservaId, 'cancelada');
-  return { success: true };
+    await tx.schedules.update({
+      where: { id: reservaId },
+      data: { status: RESERVA_STATUS.CANCELADA },
+    });
+    await registrarHistorico(tx, reservaId, 'cancelada');
+
+    return { success: true as const };
+  });
 }
 
-export function reativarReserva(
+export async function reativarReserva(
   reservaId: string,
   userId: string,
-): { success: true } | { success: false; reason: 'not_found' | 'cannot_reactivate' } {
-  const reserva = db
-    .prepare(
-      `SELECT id, status, data_reserva FROM schedules WHERE id = ? AND user_id = ?`,
-    )
-    .get(reservaId, userId) as {
-    id: string;
-    status: number;
-    data_reserva: string;
-  } | null;
+): Promise<
+  { success: true } | { success: false; reason: 'not_found' | 'cannot_reactivate' }
+> {
+  return prisma.$transaction(async (tx) => {
+    const reserva = await tx.schedules.findFirst({
+      where: { id: reservaId, user_id: userId },
+      select: { id: true, status: true, data_reserva: true },
+    });
 
-  if (!reserva) return { success: false, reason: 'not_found' };
+    if (!reserva) return { success: false, reason: 'not_found' as const };
 
-  const ePassado = reserva.data_reserva < dayjs().format('YYYY-MM-DD');
-  const podeReativar = !ePassado && reserva.status === RESERVA_STATUS.CANCELADA;
+    const ePassado = reserva.data_reserva < dayjs().format('YYYY-MM-DD');
+    const podeReativar =
+      !ePassado && reserva.status === RESERVA_STATUS.CANCELADA;
 
-  if (!podeReativar) return { success: false, reason: 'cannot_reactivate' };
+    if (!podeReativar)
+      return { success: false, reason: 'cannot_reactivate' as const };
 
-  db.prepare('UPDATE schedules SET status = ? WHERE id = ?').run(
-    RESERVA_STATUS.PENDENTE,
-    reservaId,
-  );
-  registrarHistorico(reservaId, 'reativada');
-  return { success: true };
+    await tx.schedules.update({
+      where: { id: reservaId },
+      data: { status: RESERVA_STATUS.PENDENTE },
+    });
+    await registrarHistorico(tx, reservaId, 'reativada');
+
+    return { success: true as const };
+  });
 }
 
-export function processReserva(body: RuUpfData, userId: string) {
-  db.prepare(
-    `UPDATE users SET nome=?, perfil=?, matricula=?, updated_at=CURRENT_TIMESTAMP WHERE id=?`,
-  ).run(body.nome, body.perfil, body.matricula ?? null, userId);
+export async function processReserva(
+  body: RuUpfData,
+  userId: string,
+): Promise<void> {
+  await prisma.$transaction(async (tx) => {
+    await tx.users.update({
+      where: { id: userId },
+      data: {
+        nome: body.nome,
+        perfil: body.perfil,
+        matricula: body.matricula ?? null,
+        updated_at: new Date(),
+      },
+    });
 
-  const inserirSchedule = db.prepare(`
-    INSERT OR IGNORE INTO schedules (id, user_id, data_reserva, refeicao, status)
-    VALUES ($id, $user_id, $data, $refeicao, $status)
-  `);
+    for (const item of body.data) {
+      const formattedDate = dayjs(item.data).format('YYYY-MM-DD');
 
-  const transaction = db.transaction((dates: RuUpfData['data']) => {
-    for (const item of dates) {
-      const reservaId = crypto.randomUUID();
-      const inserido = inserirSchedule.run({
-        $id: reservaId,
-        $user_id: userId,
-        $data: dayjs(item.data).format('YYYY-MM-DD'),
-        $refeicao: item.refeicao,
-        $status: RESERVA_STATUS.PENDENTE,
+      const existing = await tx.schedules.findFirst({
+        where: { user_id: userId, data_reserva: formattedDate, refeicao: item.refeicao },
+        select: { id: true },
       });
 
-      if (inserido.changes > 0) {
-        registrarHistorico(reservaId, 'criada');
-      }
+      if (existing) continue;
+
+      const reservaId = crypto.randomUUID();
+      await tx.schedules.create({
+        data: {
+          id: reservaId,
+          user_id: userId,
+          data_reserva: formattedDate,
+          refeicao: item.refeicao,
+          status: RESERVA_STATUS.PENDENTE,
+        },
+      });
+      await registrarHistorico(tx, reservaId, 'criada');
     }
   });
-
-  transaction(body.data);
 }

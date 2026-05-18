@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/db/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model users {
+  id         String    @id
+  email      String    @unique
+  nome       String
+  perfil     String
+  matricula  String?
+  updated_at DateTime? @default(now())
+
+  schedules  schedules[]
+}
+
+model schedules {
+  id           String    @id
+  user_id      String
+  data_reserva String
+  refeicao     String
+  processado   Int       @default(0)
+  status       Int       @default(0)
+  created_at   DateTime? @default(now())
+
+  user         users               @relation(fields: [user_id], references: [id])
+  historico    reserva_historico[]
+
+  @@unique([user_id, data_reserva, refeicao])
+}
+
+model reserva_historico {
+  id         String    @id
+  reserva_id String
+  acao       String
+  created_at DateTime? @default(now())
+
+  reserva    schedules @relation(fields: [reserva_id], references: [id])
+}
+
+model cardapio {
+  id           String    @id
+  universidade String
+  data         String
+  tipo         String
+  menu_do_dia  String
+  saladas      String
+  suco         String?
+  created_at   DateTime? @default(now())
+
+  @@unique([universidade, data, tipo])
+}
