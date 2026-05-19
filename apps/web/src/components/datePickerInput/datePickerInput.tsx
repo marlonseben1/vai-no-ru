@@ -1,6 +1,7 @@
 import { CalendarMonth as CalendarIcon } from '@mui/icons-material';
 import { IconButton, InputAdornment, TextField } from '@mui/material';
 import type { DateCalendarProps } from '@mui/x-date-pickers/DateCalendar';
+import type { ReservaDia } from '@repo/shared';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 import {
@@ -9,16 +10,14 @@ import {
   type FieldValues,
   useController,
 } from 'react-hook-form';
-import {
-  type DateMeal,
-  DatePickerDialog,
-} from '../datePickerDialog/datePickerDialog';
+import { DatePickerDialog } from '../datePickerDialog/datePickerDialog';
 
 type DatePickerInputProps<T extends FieldValues> = {
   name: FieldPath<T>;
   label?: string;
   control: Control<T>;
   calendarProps?: Omit<DateCalendarProps, 'value' | 'onChange'>;
+  diasBloqueados?: string[];
 };
 
 export function DatePickerInput<T extends FieldValues>({
@@ -26,6 +25,7 @@ export function DatePickerInput<T extends FieldValues>({
   label,
   control,
   calendarProps,
+  diasBloqueados,
 }: DatePickerInputProps<T>) {
   const [open, setOpen] = useState(false);
   const {
@@ -42,7 +42,7 @@ export function DatePickerInput<T extends FieldValues>({
   const displayValue =
     Array.isArray(value) && value.length > 0
       ? value
-          .map((d: DateMeal) => dayjs(d.data).format('DD/MM/YYYY'))
+          .map((d: ReservaDia) => dayjs(d.data).format('DD/MM/YYYY'))
           .sort(
             (a: string, b: string) =>
               dayjs(a, 'DD/MM/YYYY').unix() - dayjs(b, 'DD/MM/YYYY').unix(),
@@ -50,9 +50,7 @@ export function DatePickerInput<T extends FieldValues>({
           .join(', ')
       : '';
 
-  const handleDateChange = (
-    newValues: { data: string; refeicao: string }[],
-  ) => {
+  const handleDateChange = (newValues: ReservaDia[]) => {
     onChange(newValues);
   };
 
@@ -95,6 +93,7 @@ export function DatePickerInput<T extends FieldValues>({
         onChange={handleDateChange}
         label={label}
         calendarProps={calendarProps}
+        diasBloqueados={diasBloqueados}
       />
     </>
   );

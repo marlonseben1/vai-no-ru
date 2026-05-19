@@ -53,7 +53,11 @@ const ACAO_CONFIG: Record<
   },
 };
 
-export function HistoricoModal({ reservaId, open, onClose }: HistoricoModalProps) {
+export function HistoricoModal({
+  reservaId,
+  open,
+  onClose,
+}: HistoricoModalProps) {
   const { data: historico, isLoading } = useQuery({
     queryKey: [QUERY_KEYS.reservaHistorico, reservaId],
     queryFn: () => reservasApi.fetchHistorico(reservaId),
@@ -64,16 +68,29 @@ export function HistoricoModal({ reservaId, open, onClose }: HistoricoModalProps
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
       <Dialog.Header closeIcon>Histórico da reserva</Dialog.Header>
       <Dialog.Content>
-        {isLoading && <CircularProgress size={24} sx={{ display: 'block', mx: 'auto', my: 2 }} />}
+        {isLoading && (
+          <CircularProgress
+            size={24}
+            sx={{ display: 'block', mx: 'auto', my: 2 }}
+          />
+        )}
         {historico && (
           <Timeline sx={{ p: 0, m: 0 }}>
             {historico.map((item, index) => {
               const config = ACAO_CONFIG[item.acao];
               const eUltimo = index === historico.length - 1;
               return (
-                <TimelineItem key={item.id} sx={{ '&::before': { flex: 0, p: 0 }, alignItems: 'center' }}>
+                <TimelineItem
+                  key={item.id}
+                  sx={{ '&::before': { flex: 0, p: 0 }, alignItems: 'center' }}
+                >
                   <TimelineSeparator>
-                    <TimelineDot sx={{ bgcolor: config.dotColor, borderColor: config.dotColor }}>
+                    <TimelineDot
+                      sx={{
+                        bgcolor: config.dotColor,
+                        borderColor: config.dotColor,
+                      }}
+                    >
                       {config.icon}
                     </TimelineDot>
                     {!eUltimo && <TimelineConnector />}
@@ -81,10 +98,16 @@ export function HistoricoModal({ reservaId, open, onClose }: HistoricoModalProps
                   <TimelineContent sx={{ px: 2, py: '12px' }}>
                     <Typography variant="bodySM">{config.label}</Typography>
                     <Box sx={{ display: 'flex', gap: 0.75, mt: 0.25 }}>
-                      <Typography variant="bodyXS" sx={{ color: colorPalette.neutral[400] }}>
+                      <Typography
+                        variant="bodyXS"
+                        sx={{ color: colorPalette.neutral[400] }}
+                      >
                         {dayjs(item.created_at).format('DD/MM/YYYY')}
                       </Typography>
-                      <Typography variant="bodyXS" sx={{ color: colorPalette.neutral[400] }}>
+                      <Typography
+                        variant="bodyXS"
+                        sx={{ color: colorPalette.neutral[400] }}
+                      >
                         {dayjs(item.created_at).format('HH:mm')}
                       </Typography>
                     </Box>

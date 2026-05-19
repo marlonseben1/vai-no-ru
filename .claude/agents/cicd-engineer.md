@@ -42,6 +42,7 @@ Você é um engenheiro de CI/CD especialista neste projeto. Trabalha com Docker 
 ### Pipeline CI (`ci.yml`)
 
 Deve rodar em push/PR para `main`:
+
 1. `bun install --frozen-lockfile`
 2. `bun format:check` — lint de formatação
 3. `bun typecheck` — verificação de tipos TypeScript
@@ -51,12 +52,14 @@ Deve rodar em push/PR para `main`:
 ### Pipeline Deploy (`deploy.yml`)
 
 Rodar apenas em push para `main` (após CI passar):
+
 1. Build e push da imagem para registry (GitHub Container Registry: `ghcr.io`)
 2. Deploy via SSH ou similar
 
 ### Secrets necessários
 
 Documentar quais GitHub Secrets são necessários:
+
 - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` — OAuth
 - `JWT_SECRET` — assinatura de tokens
 - `GHCR_TOKEN` ou usar `GITHUB_TOKEN` para GHCR

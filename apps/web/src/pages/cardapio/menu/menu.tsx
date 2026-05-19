@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography';
 import type { CardapioDia as SharedCardapioDia } from '@repo/shared';
 import { PiPlantFill } from 'react-icons/pi';
 import { RiDrinks2Fill } from 'react-icons/ri';
-import { iconesMapa, coresMapa } from '@/constants/constants.ts';
+import { coresMapa, iconesMapa } from '@/constants/constants.ts';
 import { colorPalette } from '@/styles/colorPalette.ts';
 
 export interface MenuProps {
@@ -32,20 +32,18 @@ export function Menu({ refeicao }: MenuProps) {
         const Icon = item.icone?.iconeId
           ? iconesMapa[item.icone.iconeId]
           : null;
-        const iconColor = item.icone?.iconeId && coresMapa[item.icone.iconeId]
-          ? coresMapa[item.icone.iconeId]
-          : colorPalette.primary[800];
-        
+        const iconColor =
+          item.icone?.iconeId && coresMapa[item.icone.iconeId]
+            ? coresMapa[item.icone.iconeId]
+            : colorPalette.primary[800];
+
         return (
           <Box
             key={item.nome}
             sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}
           >
             {Icon && (
-              <Box
-                component="span"
-                sx={{ display: 'flex', color: iconColor }}
-              >
+              <Box component="span" sx={{ display: 'flex', color: iconColor }}>
                 <Icon size={20} />
               </Box>
             )}

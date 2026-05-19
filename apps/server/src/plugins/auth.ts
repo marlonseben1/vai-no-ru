@@ -27,4 +27,7 @@ export const authPlugin = new Elysia()
       set.status = 401;
       return { success: false, message: 'Token ausente ou inválido.' };
     }
-  });
+  })
+  .resolve({ as: 'scoped' }, ({ currentUserId }) => ({
+    currentUserId: currentUserId as string,
+  }));

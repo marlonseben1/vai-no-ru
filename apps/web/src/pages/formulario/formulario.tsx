@@ -1,20 +1,53 @@
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Button, Divider, Grid, Paper, Stack, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Divider,
+  Grid,
+  Paper,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { perfilOptions } from '@/shared/constants/constants';
+import { colorPalette } from '@/styles/colorPalette';
 import { DatePickerInput } from '../../components/datePickerInput/datePickerInput';
 import { SelectFieldInput } from '../../components/selectFieldInput/selectFieldInput';
 import { TextFieldInput } from '../../components/textFieldInput/textFieldInput';
 import { useFormulario } from './useFormulario';
 
 export const Formulario = () => {
-  const { reset, control, onError, onSubmit, isAlunoUpf, handleSubmit, userEmail } =
-    useFormulario();
+  const {
+    reset,
+    control,
+    onError,
+    onSubmit,
+    isAlunoUpf,
+    handleSubmit,
+    userEmail,
+    diasBloqueados,
+  } = useFormulario();
 
   return (
     <Paper
       elevation={3}
       sx={{ borderRadius: 2, maxWidth: 800, mx: 'auto', p: 4, mt: 2 }}
     >
+      <Box mb={3}>
+        <Typography
+          variant="titleSM"
+          component="h1"
+          sx={{ color: colorPalette.primary[500] }}
+        >
+          Agendar Reserva
+        </Typography>
+        <Typography variant="bodySM" sx={{ color: colorPalette.neutral[600] }}>
+          Preencha seus dados e selecione os dias que deseja reservar no RU
+        </Typography>
+      </Box>
+
+      <Divider sx={{ mb: 3 }} />
+
       <form onSubmit={handleSubmit(onSubmit, onError)} noValidate>
         <Grid container spacing={4}>
           <Grid size={12}>
@@ -22,7 +55,6 @@ export const Formulario = () => {
               Perfil e Identificação
             </Typography>
             <Grid container spacing={2}>
-              
               <Grid size={{ xs: 12, md: 6 }}>
                 <TextField
                   fullWidth
@@ -31,7 +63,8 @@ export const Formulario = () => {
                   value={userEmail}
                   slotProps={{ inputLabel: { shrink: true } }}
                 />
-              </Grid><Grid size={{ xs: 12, md: 6 }}>
+              </Grid>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <TextFieldInput
                   name="nome"
                   required
@@ -81,6 +114,7 @@ export const Formulario = () => {
                   name="data"
                   control={control}
                   label="Datas e Refeições"
+                  diasBloqueados={diasBloqueados}
                 />
               </Grid>
             </Grid>

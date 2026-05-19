@@ -1,19 +1,19 @@
 {
-    "extends": "../../tsconfig.base.json",
-    "compilerOptions": {
-        "baseUrl": ".",
-        "paths": {
-            "@/*": [
-                "./src/*"
-            ],
-            "@repo/shared": [
-                "../../packages/shared/index.ts"
-            ]
-        }
-    },
-    "include": [
-        "src/**/*",
-        "prisma.config.ts",
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ],
+      "@repo/shared": [
         "../../packages/shared/index.ts"
-    ]
+      ]
+    }
+  },
+  "include": [
+    "src/**/*",
+    "prisma.config.ts",
+    "../../packages/shared/index.ts"
+  ]
 }

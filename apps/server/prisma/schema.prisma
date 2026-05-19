@@ -30,7 +30,7 @@ model schedules {
   user         users               @relation(fields: [user_id], references: [id])
   historico    reserva_historico[]
 
-  @@unique([user_id, data_reserva, refeicao])
+  @@unique([user_id, data_reserva])
 }
 
 model reserva_historico {

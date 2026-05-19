@@ -32,7 +32,11 @@ export const useMainForm = () => {
   const onSubmit: SubmitHandler<RuUpfData> = async (data) => {
     try {
       await api.post('/reserva', data);
-      updateUser({ name: data.nome, perfil: data.perfil, matricula: data.matricula });
+      updateUser({
+        name: data.nome,
+        perfil: data.perfil,
+        matricula: data.matricula,
+      });
       showToast('Reserva registrada com sucesso!', 'success');
       reset({ ...data, data: [] });
     } catch (_) {
@@ -40,8 +44,7 @@ export const useMainForm = () => {
     }
   };
 
-  const onError: SubmitErrorHandler<RuUpfData> = (errors) => {
-    console.log(errors);
+  const onError: SubmitErrorHandler<RuUpfData> = (_errors) => {
     showToast('Por favor, corrija os erros no formulário.', 'error');
   };
 

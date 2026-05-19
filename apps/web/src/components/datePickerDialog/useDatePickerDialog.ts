@@ -1,9 +1,9 @@
+import { type ReservaDia, refeicaoEnum } from '@repo/shared';
 import dayjs, { type Dayjs } from 'dayjs';
-import type { DateMeal } from './datePickerDialog';
 
 interface UseDatePickerDialogProps {
-  value: DateMeal[];
-  onChange: (newValues: DateMeal[]) => void;
+  value: ReservaDia[];
+  onChange: (newValues: ReservaDia[]) => void;
 }
 
 export function useDatePickerDialog({
@@ -27,7 +27,10 @@ export function useDatePickerDialog({
         })),
       );
     } else {
-      const newDates = [...selectedDates, { date, refeicao: 'Jantar' }];
+      const newDates = [
+        ...selectedDates,
+        { date, refeicao: refeicaoEnum.options[0] as ReservaDia['refeicao'] },
+      ];
       onChange(
         newDates.map((d) => ({
           data: d.date.toISOString(),
@@ -37,7 +40,10 @@ export function useDatePickerDialog({
     }
   };
 
-  const handleChangeRefeicao = (dateToChange: Dayjs, newMeal: string) => {
+  const handleChangeRefeicao = (
+    dateToChange: Dayjs,
+    newMeal: ReservaDia['refeicao'],
+  ) => {
     const newDates = selectedDates.map((d) => {
       if (d.date.isSame(dateToChange, 'day')) {
         return { data: d.date.toISOString(), refeicao: newMeal };
