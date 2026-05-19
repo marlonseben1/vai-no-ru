@@ -2,10 +2,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import {
   Box,
   Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   Divider,
   IconButton,
   Stack,
@@ -24,6 +20,7 @@ import {
 import type { ReservaDia } from '@repo/shared';
 import type { Dayjs } from 'dayjs';
 import { useCallback } from 'react';
+import { Dialog } from '@/components/dialog';
 import useIsMobile from '@/hooks/useIsMobile';
 import { refeicaoOptions } from '@/shared/constants/constants';
 import { colorPalette } from '@/styles/colorPalette';
@@ -52,6 +49,7 @@ function CustomDay({
 }) {
   const isSelected = selectedDates.some((d) => d.date.isSame(props.day, 'day'));
   const isBloqueado = diasBloqueados.includes(props.day.format('YYYY-MM-DD'));
+  const isFimDeSemana = props.day.day() === 0 || props.day.day() === 6;
 
   return (
     <Box sx={{ position: 'relative', display: 'inline-flex' }}>
@@ -67,6 +65,21 @@ function CustomDay({
             height: 4,
             borderRadius: '50%',
             bgcolor: colorPalette.success.main,
+            pointerEvents: 'none',
+          }}
+        />
+      )}
+      {isFimDeSemana && (
+        <Box
+          sx={{
+            position: 'absolute',
+            bottom: 2,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: 4,
+            height: 4,
+            borderRadius: '50%',
+            bgcolor: colorPalette.neutral[300],
             pointerEvents: 'none',
           }}
         />
@@ -121,11 +134,14 @@ export function DatePickerDialog({
         }}
       >
         {label && (
-          <DialogTitle sx={{ pb: 0, fontSize: '1.2rem', fontWeight: 'bold' }}>
+          <Dialog.Header
+            sx={{ pb: 0, fontSize: '1.2rem', fontWeight: 'bold' }}
+            closeIcon
+          >
             {label}
-          </DialogTitle>
+          </Dialog.Header>
         )}
-        <DialogContent
+        <Dialog.Content
           sx={{
             p: isMobile ? 1 : 2,
             display: 'flex',
@@ -148,7 +164,9 @@ export function DatePickerDialog({
               value={null}
               onChange={handleToggleDate}
               shouldDisableDate={(date) =>
-                (diasBloqueados ?? []).includes(date.format('YYYY-MM-DD'))
+                (diasBloqueados ?? []).includes(date.format('YYYY-MM-DD')) ||
+                date.day() === 0 ||
+                date.day() === 6
               }
               slots={{ day: diaPersonalizado }}
             />
@@ -237,8 +255,8 @@ export function DatePickerDialog({
               </Stack>
             </>
           )}
-        </DialogContent>
-        <DialogActions sx={{ px: 2, pb: 2 }}>
+        </Dialog.Content>
+        <Dialog.Footer sx={{ px: 2, pb: 2 }}>
           <Button
             onClick={onClose}
             variant="contained"
@@ -247,7 +265,7 @@ export function DatePickerDialog({
           >
             Confirmar Datas Selecionadas ({selectedDates.length})
           </Button>
-        </DialogActions>
+        </Dialog.Footer>
       </Dialog>
     </LocalizationProvider>
   );
