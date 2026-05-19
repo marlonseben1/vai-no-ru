@@ -34,7 +34,13 @@ export const ruFormSchema = z
       .refine((dias) => {
         const hoje = new Date().toISOString().slice(0, 10);
         return dias.every((d) => d.data.slice(0, 10) >= hoje);
-      }, 'Não é possível reservar datas passadas'),
+      }, 'Não é possível reservar datas passadas')
+      .refine((dias) => {
+        return dias.every((d) => {
+          const diaSemana = new Date(d.data).getUTCDay();
+          return diaSemana !== 0 && diaSemana !== 6;
+        });
+      }, 'Reservas só podem ser feitas de segunda a sexta'),
   })
   .superRefine((data, ctx) => {
     if (
