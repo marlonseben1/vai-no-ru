@@ -56,6 +56,7 @@ export function ReservaCard({ reserva }: ReservaCardProps) {
     mutationFn: () => reservasApi.cancelarReserva(reserva.id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.reservas] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.reservaHistorico, reserva.id] });
       showToast('Reserva cancelada com sucesso.', 'success');
       setAnchorEl(null);
     },
@@ -69,6 +70,7 @@ export function ReservaCard({ reserva }: ReservaCardProps) {
     mutationFn: () => reservasApi.reativarReserva(reserva.id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.reservas] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.reservaHistorico, reserva.id] });
       showToast('Reserva reativada com sucesso.', 'success');
       setAnchorEl(null);
     },

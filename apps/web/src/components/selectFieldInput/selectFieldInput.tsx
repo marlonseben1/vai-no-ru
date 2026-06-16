@@ -141,6 +141,7 @@ function ControlledSelect<T extends FieldValues>({
       options={options}
       selectProps={{ ...selectProps, ...field }}
       value={field.value}
+      onChange={field.onChange}
       error={error?.message}
     />
   );
