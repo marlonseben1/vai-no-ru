@@ -7,20 +7,28 @@ import {
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
+import type { ReservaFiltros } from '@/api/reservas/reservas.types';
 import { colorPalette } from '@/styles/colorPalette';
+import { FiltrosReservas } from './filtrosReservas';
 import { ReservaCard } from './reservaCard/reservaCard';
 import { PAGE_SIZE, useReservas } from './useReservas';
 
 export const Reservas = () => {
   const [page, setPage] = useState(1);
-  const { data, isLoading, isError } = useReservas(page);
+  const [filtros, setFiltros] = useState<ReservaFiltros>({});
+  const { data, isLoading, isError } = useReservas(page, filtros);
+
+  function handleFiltrosChange(novosFiltros: ReservaFiltros) {
+    setFiltros(novosFiltros);
+    setPage(1);
+  }
 
   const totalPages = data ? Math.ceil(data.total / PAGE_SIZE) : 0;
 
   return (
     <Paper
       elevation={3}
-      sx={{ borderRadius: 2, maxWidth: 800, mx: 'auto', p: 4, mt: 2 }}
+      sx={{ borderRadius: 2, maxWidth: 800, mx: 'auto', p: { xs: 2, sm: 4 }, mt: 2 }}
     >
       <Box mb={3}>
         <Typography
@@ -36,6 +44,8 @@ export const Reservas = () => {
       </Box>
 
       <Divider sx={{ mb: 3 }} />
+
+      <FiltrosReservas filtros={filtros} onChange={handleFiltrosChange} />
 
       {isLoading && (
         <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>

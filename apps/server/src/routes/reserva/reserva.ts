@@ -1,4 +1,4 @@
-import { ruFormSchema } from '@repo/shared';
+import { ruFormSchema, type DataFiltroPreset } from '@repo/shared';
 import { Elysia, t } from 'elysia';
 import { authPlugin } from '@/plugins/auth';
 import {
@@ -30,6 +30,11 @@ export const reservaRoutes = new Elysia()
         pageSize: query.pageSize,
         sort: query.sort,
         order: query.order,
+        dataFiltro: query.dataFiltro as DataFiltroPreset | undefined,
+        dataInicio: query.dataInicio,
+        dataFim: query.dataFim,
+        refeicao: query.refeicao,
+        situacao: query.situacao,
       });
     },
     {
@@ -38,6 +43,11 @@ export const reservaRoutes = new Elysia()
         pageSize: t.Optional(t.Numeric()),
         sort: t.Optional(t.String()),
         order: t.Optional(t.Union([t.Literal('asc'), t.Literal('desc')])),
+        dataFiltro: t.Optional(t.String()),
+        dataInicio: t.Optional(t.String()),
+        dataFim: t.Optional(t.String()),
+        refeicao: t.Optional(t.String()),
+        situacao: t.Optional(t.Numeric()),
       }),
     },
   )

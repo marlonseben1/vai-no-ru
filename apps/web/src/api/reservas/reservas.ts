@@ -1,13 +1,14 @@
 import { api } from '../api';
 import type { DefaultListParams } from '../types';
 import type {
+  ReservaFiltros,
   ReservaHistoricoItem,
   ReservasListResponse,
 } from './reservas.types';
 
 export const reservasApi = {
   async fetchReservas(
-    params?: DefaultListParams,
+    params?: DefaultListParams & ReservaFiltros,
   ): Promise<ReservasListResponse> {
     return api
       .get<ReservasListResponse>('/reservas', { params })
