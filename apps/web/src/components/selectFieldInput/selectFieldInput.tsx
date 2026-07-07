@@ -51,6 +51,7 @@ function BaseSelect({
         label={label}
         value={value ?? ''}
         onChange={onChange}
+        displayEmpty
       >
         {options.map((option) => {
           const isString = typeof option === 'string';

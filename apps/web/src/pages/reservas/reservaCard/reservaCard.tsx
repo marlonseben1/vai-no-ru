@@ -123,7 +123,7 @@ export function ReservaCard({ reserva }: ReservaCardProps) {
           color={statusConfig.color}
           size="small"
           variant="outlined"
-          sx={{ minWidth: 120 }}
+          sx={{ minWidth: { xs: 90, sm: 120 } }}
         />
         <IconButton size="small" onClick={(e) => setAnchorEl(e.currentTarget)}>
           <RxHamburgerMenu />
@@ -154,16 +154,6 @@ export function ReservaCard({ reserva }: ReservaCardProps) {
               <MdOutlineReplay size={18} />
             </ListItemIcon>
             <Typography variant="bodySM">Reativar</Typography>
-          </MenuItem>
-        )}
-        {!deveExibirCancelar && !deveExibirReativar && (
-          <MenuItem disabled>
-            <Typography
-              variant="bodySM"
-              sx={{ color: colorPalette.neutral[400] }}
-            >
-              Sem ações disponíveis
-            </Typography>
           </MenuItem>
         )}
         <MenuItem

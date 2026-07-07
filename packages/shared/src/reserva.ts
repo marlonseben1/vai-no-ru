@@ -57,6 +57,11 @@ export const ruFormSchema = z
 
 export type RuUpfData = z.infer<typeof ruFormSchema>;
 
+export type DataFiltroPreset =
+  | 'essa_semana'
+  | 'semana_passada'
+  | 'personalizado';
+
 export const RESERVA_STATUS = {
   PENDENTE: 0,
   AGENDADA: 1,
