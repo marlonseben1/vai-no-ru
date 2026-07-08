@@ -25,6 +25,7 @@ model schedules {
   refeicao     String
   processado   Int       @default(0)
   status       Int       @default(0)
+  tentativas   Int       @default(0)
   created_at   DateTime? @default(now())
 
   user         users               @relation(fields: [user_id], references: [id])

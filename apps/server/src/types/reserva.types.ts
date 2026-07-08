@@ -2,7 +2,12 @@ import type { DataFiltroPreset, ReservaStatus } from '@repo/shared';
 
 export type { DataFiltroPreset, ReservaStatus };
 
-export type ReservaAcao = 'criada' | 'agendada' | 'cancelada' | 'reativada';
+export type ReservaAcao =
+  | 'criada'
+  | 'agendada'
+  | 'nao_agendada'
+  | 'cancelada'
+  | 'reativada';
 
 export interface ReservaHistoricoItem {
   id: string;

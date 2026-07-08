@@ -1,7 +1,7 @@
 import { getCardapioQuerySchema } from '@repo/shared';
 import { Elysia } from 'elysia';
 import { authPlugin } from '@/plugins/auth';
-import { getCardapio } from '@/services/cardapio/cardapio';
+import { getCardapio } from '@/services/cardapio/cardapio.services';
 
 export const cardapioRoutes = new Elysia()
   .use(authPlugin)
