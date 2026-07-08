@@ -1,20 +1,14 @@
 import { ruFormSchema, type DataFiltroPreset } from '@repo/shared';
 import { Elysia, t } from 'elysia';
 import { authPlugin } from '@/plugins/auth';
-import {
-  cancelarReserva,
-  getHistoricoReserva,
-  getReservasByUser,
-  processReserva,
-  reativarReserva,
-} from '@/services/reserva/reserva';
+import { ReservaService } from '@/services/reserva/reserva.services';
 
 export const reservaRoutes = new Elysia()
   .use(authPlugin)
   .post(
     '/reserva',
     async ({ body, currentUserId }) => {
-      await processReserva(body, currentUserId);
+      await ReservaService.processReserva(body, currentUserId);
       return {
         success: true,
         message: `Agendamento de ${body.data.length} dias concluído.`,
@@ -25,7 +19,7 @@ export const reservaRoutes = new Elysia()
   .get(
     '/reservas',
     async ({ currentUserId, query }) => {
-      return getReservasByUser(currentUserId, {
+      return ReservaService.getReservasByUser(currentUserId, {
         page: query.page,
         pageSize: query.pageSize,
         sort: query.sort,
@@ -52,7 +46,10 @@ export const reservaRoutes = new Elysia()
     },
   )
   .delete('/reservas/:id', async ({ currentUserId, params, set }) => {
-    const result = await cancelarReserva(params.id, currentUserId);
+    const result = await ReservaService.cancelarReserva(
+      params.id,
+      currentUserId,
+    );
     if (!result.success) {
       set.status = result.reason === 'cannot_cancel' ? 422 : 404;
       return {
@@ -67,7 +64,10 @@ export const reservaRoutes = new Elysia()
     return { success: true, message: 'Reserva cancelada com sucesso.' };
   })
   .get('/reservas/:id/historico', async ({ currentUserId, params, set }) => {
-    const historico = await getHistoricoReserva(params.id, currentUserId);
+    const historico = await ReservaService.getHistoricoReserva(
+      params.id,
+      currentUserId,
+    );
     if (!historico) {
       set.status = 404;
       return { success: false, message: 'Reserva não encontrada.' };
@@ -75,7 +75,10 @@ export const reservaRoutes = new Elysia()
     return historico;
   })
   .put('/reservas/:id', async ({ currentUserId, params, set }) => {
-    const result = await reativarReserva(params.id, currentUserId);
+    const result = await ReservaService.reativarReserva(
+      params.id,
+      currentUserId,
+    );
     if (!result.success) {
       set.status = result.reason === 'cannot_reactivate' ? 422 : 404;
       return {

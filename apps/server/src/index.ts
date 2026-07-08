@@ -3,7 +3,12 @@ import dayjs from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import { Elysia } from 'elysia';
-import { ruAutomationJob } from './jobs/ru-automation';
+import {
+  retryDiaJob,
+  retryNoiteJob,
+  submitDiaJob,
+  submitNoiteJob,
+} from './jobs/ru-automation';
 import { authRoutes } from './routes/auth/auth';
 import { cardapioRoutes } from './routes/cardapio/cardapio';
 import { reservaRoutes } from './routes/reserva/reserva';
@@ -14,7 +19,10 @@ dayjs.tz.setDefault('America/Sao_Paulo');
 
 const app = new Elysia()
   .use(cors())
-  .use(ruAutomationJob)
+  .use(submitDiaJob)
+  .use(submitNoiteJob)
+  .use(retryDiaJob)
+  .use(retryNoiteJob)
   .use(reservaRoutes)
   .use(authRoutes)
   .use(cardapioRoutes)
